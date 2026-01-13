@@ -480,6 +480,58 @@
     :condition-params="getBatchConditionParams"
     :sorter="propsRes.sorter || {}"
   />
+  <!--  邮件接收人配置-->
+  <a-modal
+    v-model:visible="showEmailConfigModal"
+    title-align="start"
+    class="ms-modal-upload ms-modal-medium"
+    :width="520"
+  >
+    <template #title>
+      <div class="flex items-center">
+        {{ t('apiScenario.emailConfig.title') }}
+        <a-tooltip v-if="emailConfigRecord?.name && translateTextToPX(emailConfigRecord.name) > 200">
+          <template #content>{{ emailConfigRecord.name }}</template>
+          <div class="ml-[4px] max-w-[200px] truncate text-[var(--color-text-4)]">
+            （{{ emailConfigRecord.name }}）
+          </div>
+        </a-tooltip>
+        <div v-else-if="emailConfigRecord?.name" class="ml-[4px] text-[var(--color-text-4)]">
+          （{{ emailConfigRecord.name }}）
+        </div>
+      </div>
+    </template>
+    <a-form ref="emailConfigFormRef" :model="emailConfigForm" layout="vertical">
+      <a-form-item field="emailRecipients" :label="t('apiScenario.emailConfig.recipients')">
+        <a-textarea
+          v-model="emailConfigForm.emailRecipients"
+          :placeholder="t('apiScenario.emailConfig.recipientsPlaceholder')"
+          :max-length="500"
+          :auto-size="{ minRows: 3, maxRows: 5 }"
+          allow-clear
+        />
+      </a-form-item>
+      <div class="text-[12px] text-[var(--color-text-4)]">
+        {{ t('apiScenario.emailConfig.recipientsTip') }}
+      </div>
+    </a-form>
+    <template #footer>
+      <div class="flex justify-end">
+        <a-button type="secondary" :disabled="emailConfigLoading" @click="cancelEmailConfigModal">
+          {{ t('common.cancel') }}
+        </a-button>
+        <a-button
+          v-permission="['PROJECT_API_SCENARIO:READ+UPDATE']"
+          class="ml-3"
+          type="primary"
+          :loading="emailConfigLoading"
+          @click="saveEmailConfigModal"
+        >
+          {{ t('common.save') }}
+        </a-button>
+      </div>
+    </template>
+  </a-modal>
 </template>
 
 <script setup lang="ts">
@@ -518,9 +570,11 @@
     batchRunScenario,
     deleteScheduleConfig,
     dragSort,
+    getScenarioEmailConfig,
     getScenarioPage,
     getScenarioStatistics,
     recycleScenario,
+    saveScenarioEmailConfig,
     scenarioBatchEditSchedule,
     scenarioScheduleConfig,
     updateScenarioPro,
@@ -910,6 +964,12 @@
           danger: false,
         },
         {
+          eventTag: 'emailConfig',
+          label: t('apiScenario.emailConfig.title'),
+          permission: ['PROJECT_API_SCENARIO:READ+UPDATE'],
+          danger: false,
+        },
+        {
           eventTag: 'delete',
           label: t('common.delete'),
           permission: ['PROJECT_API_SCENARIO:READ+DELETE'],
@@ -925,11 +985,17 @@
         danger: false,
       },
       {
+        eventTag: 'emailConfig',
+        label: t('apiScenario.emailConfig.title'),
+        permission: ['PROJECT_API_SCENARIO:READ+UPDATE'],
+        danger: false,
+      },
+      {
         eventTag: 'delete',
         label: t('common.delete'),
         permission: ['PROJECT_API_SCENARIO:READ+DELETE'],
         danger: true,
-      },
+      }
     ];
   }
 
@@ -1257,6 +1323,52 @@
     }
   }
 
+  // 邮件配置相关
+  const showEmailConfigModal = ref(false);
+  const emailConfigLoading = ref(false);
+  const emailConfigRecord = ref<ApiScenarioTableItem>();
+  const emailConfigFormRef = ref<FormInstance>();
+  const emailConfigForm = ref({
+    emailRecipients: '',
+  });
+
+  async function openEmailConfigModal(record: ApiScenarioTableItem) {
+    emailConfigRecord.value = record;
+    emailConfigForm.value.emailRecipients = '';
+    showEmailConfigModal.value = true;
+    try {
+      const res = await getScenarioEmailConfig(record.id);
+      if (res && res.emailRecipients) {
+        emailConfigForm.value.emailRecipients = res.emailRecipients;
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  }
+
+  function cancelEmailConfigModal() {
+    showEmailConfigModal.value = false;
+    emailConfigForm.value.emailRecipients = '';
+  }
+
+  async function saveEmailConfigModal() {
+    try {
+      emailConfigLoading.value = true;
+      await saveScenarioEmailConfig({
+        scenarioId: emailConfigRecord.value?.id || '',
+        emailRecipients: emailConfigForm.value.emailRecipients,
+      });
+      Message.success(t('apiScenario.emailConfig.saveSuccess'));
+      cancelEmailConfigModal();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    } finally {
+      emailConfigLoading.value = false;
+    }
+  }
+
   /**
    * 处理表格更多按钮事件
    * @param item
@@ -1274,6 +1386,9 @@
         break;
       case 'updateSchedule':
         openScheduleModal(record);
+        break;
+      case 'emailConfig':
+        openEmailConfigModal(record);
         break;
       default:
         break;

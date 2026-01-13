@@ -1,6 +1,8 @@
 package io.metersphere.system.service;
 
 
+import io.metersphere.api.domain.ApiScenarioEmailConfig;
+import io.metersphere.api.mapper.ApiScenarioEmailConfigMapper;
 import io.metersphere.project.domain.Project;
 import io.metersphere.sdk.util.LogUtils;
 import io.metersphere.system.notice.MessageDetail;
@@ -39,7 +41,8 @@ public class NoticeSendService {
     private WebhookNoticeSender webhookNoticeSender;
     @Resource
     private MessageDetailService messageDetailService;
-
+    @Resource
+    private ApiScenarioEmailConfigMapper apiScenarioEmailConfigMapper;
 
     private AbstractNoticeSender getNoticeSender(MessageDetail messageDetail) {
         AbstractNoticeSender noticeSender;
@@ -166,6 +169,9 @@ public class NoticeSendService {
                         }
                     });
 
+            // 直接获取场景的邮件配置信息，发送邮件
+            sendScenarioReportEmail(noticeModel);
+
         } catch (Exception e) {
             LogUtils.error(e.getMessage(), e);
         }
@@ -228,6 +234,118 @@ public class NoticeSendService {
         m.setSubject(defaultSubject);
         m.setType(NoticeConstants.Type.IN_SITE);
         return m;
+    }
+
+    /**
+     * 发送场景测试报告邮件
+     */
+    private void sendScenarioReportEmail(NoticeModel noticeModel) {
+        try {
+            // 只有场景执行成功或误报时才发送邮件
+            String event = noticeModel.getEvent();
+            if (!StringUtils.equals(event, NoticeConstants.Event.SCENARIO_EXECUTE_SUCCESSFUL)
+                    && !StringUtils.equals(event, NoticeConstants.Event.SCENARIO_EXECUTE_FAKE_ERROR)) {
+                return;
+            }
+
+            Map<String, Object> paramMap = noticeModel.getParamMap();
+            if (paramMap == null || paramMap.get("id") == null) {
+                return;
+            }
+            String scenarioId = paramMap.get("id").toString();
+            ApiScenarioEmailConfig emailConfig = apiScenarioEmailConfigMapper.selectByPrimaryKey(scenarioId);
+            if (emailConfig == null || StringUtils.isBlank(emailConfig.getEmailRecipients())) {
+                return;
+            }
+
+            // 解析邮件接收人
+            String[] recipients = emailConfig.getEmailRecipients().split(",");
+            if (recipients.length == 0) {
+                return;
+            }
+
+            // 构建邮件标题
+            String scenarioName = getStringValue(paramMap, "name");
+            String executionTime = formatTime(paramMap.get("startTime"));
+            String subject = String.format("【MS】%s_%s_场景测试报告", scenarioName, executionTime);
+
+            // 构建邮件正文
+            String content = buildEmailContent(paramMap);
+
+            // 发送邮件
+            mailNoticeSender.sendWithNoSign(subject, content, recipients, null);
+            LogUtils.info("场景测试报告邮件发送成功，场景ID: {}, 收件人: {}", scenarioId, emailConfig.getEmailRecipients());
+        } catch (Exception e) {
+            LogUtils.error("发送场景测试报告邮件失败", e);
+        }
+    }
+
+    /**
+     * 构建邮件正文内容 - 简约风格
+     */
+    private String buildEmailContent(Map<String, Object> paramMap) {
+        String scenarioName = getStringValue(paramMap, "name");
+        String reportStatus = getStringValue(paramMap, "reportStatus");
+        boolean isSuccess = "成功".equals(reportStatus) || "SUCCESS".equalsIgnoreCase(getStringValue(paramMap, "lastReportStatus"));
+        String statusColor = isSuccess ? "#00C261" : "#ED0303";
+        String reportUrl = getStringValue(paramMap, "reportUrl");
+
+        StringBuilder html = new StringBuilder();
+        html.append("<!DOCTYPE html>");
+        html.append("<html><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1.0'></head>");
+        html.append("<body style='margin:0;padding:20px;font-family:Arial,sans-serif;font-size:14px;color:#333;'>");
+
+        // 标题
+        html.append("<h2 style='margin:0 0 20px 0;color:#783887;font-size:18px;'>").append(scenarioName).append("</h2>");
+
+        // 信息列表
+        html.append("<table cellpadding='0' cellspacing='0' border='0' style='line-height:1.8;'>");
+        appendInfoRow(html, "环境", getStringValue(paramMap, "environment"));
+        appendInfoRow(html, "执行人", getStringValue(paramMap, "OPERATOR"));
+        html.append("<tr><td style='color:#666;padding-right:16px;'>测试结果</td><td style='font-weight:bold;color:").append(statusColor).append(";'>").append(reportStatus).append("</td></tr>");
+        appendInfoRow(html, "测试开始时间", formatTime(paramMap.get("startTime")));
+        appendInfoRow(html, "测试结束时间", formatTime(paramMap.get("endTime")));
+        appendInfoRow(html, "接口总数", getStringValue(paramMap, "stepTotal"));
+        appendInfoRow(html, "成功接口数", getStringValue(paramMap, "successCount"));
+        appendInfoRow(html, "失败接口数", getStringValue(paramMap, "errorCount"));
+        appendInfoRow(html, "成功率", getStringValue(paramMap, "requestPassRate") + "%");
+        html.append("</table>");
+
+        // 报告链接
+        if (StringUtils.isNotBlank(reportUrl)) {
+            html.append("<p style='margin:20px 0 0 0;'>");
+            html.append("<span style='color:#666;'>测试报告链接：</span>");
+            html.append("<a href='").append(reportUrl).append("' style='color:#783887;'>").append(reportUrl).append("</a>");
+            html.append("</p>");
+        }
+
+        html.append("</body></html>");
+        return html.toString();
+    }
+
+    private void appendInfoRow(StringBuilder html, String label, String value) {
+        html.append("<tr>");
+        html.append("<td style='color:#666;padding-right:16px;'>").append(label).append("</td>");
+        html.append("<td>").append(value != null && !value.isEmpty() ? value : "-").append("</td>");
+        html.append("</tr>");
+    }
+
+    private String getStringValue(Map<String, Object> paramMap, String key) {
+        Object value = paramMap.get(key);
+        return value != null ? value.toString() : "";
+    }
+
+    private String formatTime(Object timestamp) {
+        if (timestamp == null) {
+            return "-";
+        }
+        try {
+            long time = Long.parseLong(timestamp.toString());
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return sdf.format(new java.util.Date(time));
+        } catch (Exception e) {
+            return "-";
+        }
     }
 
 }

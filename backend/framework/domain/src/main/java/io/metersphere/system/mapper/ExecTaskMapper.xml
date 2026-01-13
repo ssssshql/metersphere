@@ -123,7 +123,7 @@
       task_type, resource_id, trigger_mode, 
       project_id, organization_id, integrated, 
       create_time, create_user, start_time, 
-      end_time, deleted, parallel, 
+      end_time, deleted, parallel,
       environment_id, pool_id, env_grouped
       )
     values (#{id,jdbcType=VARCHAR}, #{num,jdbcType=BIGINT}, #{taskName,jdbcType=VARCHAR}, 

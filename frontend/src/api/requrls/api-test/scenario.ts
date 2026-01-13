@@ -54,3 +54,6 @@ export const ScenarioBatchExportLogUrl = '/api/report/scenario/batch-export'; //
 export const GetScenarioBatchExportParamsUrl = '/api/report/scenario/batch-param'; // 场景批量导出报告id 集合
 export const ScenarioAssociateExportUrl = '/api/scenario/associate/all'; // 接口场景管理-场景导入系统参数
 export const ScenarioBatchEditScheduleUrl = '/api/scenario/batch-operation/schedule-config'; // 批量编辑场景定时任务
+
+// 场景邮件接收人配置
+export const ScenarioEmailConfigUrl = '/api/scenario/email-config'; // 获取/保存场景邮件接收人配置

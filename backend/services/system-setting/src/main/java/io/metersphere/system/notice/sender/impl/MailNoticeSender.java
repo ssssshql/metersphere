@@ -49,6 +49,79 @@ public class MailNoticeSender extends AbstractNoticeSender {
         send(subjectText, context, users, new String[0]);
     }
 
+    public void sendWithNoSign(String subject, String context, String[] users, String[] cc) throws Exception {
+        LogUtils.debug("发送邮件开始 ");
+        SystemParameterExample example = new SystemParameterExample();
+        example.createCriteria().andParamKeyLike(ParamConstants.Classify.MAIL.getValue() + "%");
+        List<SystemParameter> paramList = systemParameterMapper.selectByExample(example);
+        Map<String, String> paramMap = paramList.stream().collect(Collectors.toMap(SystemParameter::getParamKey, p -> {
+            if (StringUtils.equals(p.getParamKey(), ParamConstants.MAIL.PASSWORD.getValue())) {
+                return EncryptUtils.aesDecrypt(p.getParamValue());
+            }
+            if (StringUtils.isEmpty(p.getParamValue())) {
+                return "";
+            } else {
+                return p.getParamValue();
+            }
+        }));
+        JavaMailSenderImpl javaMailSender = getMailSender(paramMap);
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+        String username = javaMailSender.getUsername();
+        String email;
+        if (username.contains("@")) {
+            email = username;
+        } else {
+            String mailHost = javaMailSender.getHost();
+            String domainName = mailHost.substring(mailHost.indexOf(".") + 1);
+            email = username + "@" + domainName;
+        }
+        InternetAddress from = new InternetAddress();
+        String smtpFrom = paramMap.get(ParamConstants.MAIL.FROM.getValue());
+        if (StringUtils.isBlank(smtpFrom)) {
+            from.setAddress(email);
+            from.setPersonal(username);
+        } else {
+            // 指定发件人后，address 应该是邮件服务器验证过的发件人
+            if (smtpFrom.contains("@")) {
+                from.setAddress(smtpFrom);
+            } else {
+                from.setAddress(email);
+            }
+            from.setPersonal(smtpFrom);
+        }
+        helper.setFrom(from);
+
+        LogUtils.debug("发件人地址" + javaMailSender.getUsername());
+        LogUtils.debug("helper" + helper);
+        if (subject.length() > 60) {
+            subject = subject.substring(0,59);
+        }
+        helper.setSubject(subject);
+
+        LogUtils.info("收件人地址: {}", Arrays.asList(users));
+        helper.setText(context, true);
+        // 有抄送
+        if (cc != null && cc.length > 0) {
+            //设置抄送人 CC（Carbon Copy）
+            helper.setCc(cc);
+            // to 参数表示收件人
+            helper.setTo(users);
+            javaMailSender.send(mimeMessage);
+        }
+        // 无抄送
+        else {
+            for (String u : users) {
+                helper.setTo(u);
+                try {
+                    javaMailSender.send(mimeMessage);
+                } catch (Exception e) {
+                    LogUtils.error("发送邮件失败: ", e);
+                }
+            }
+        }
+    }
+
     private void send(String subject, String context, String[] users, String[] cc) throws Exception {
         LogUtils.debug("发送邮件开始 ");
         SystemParameterExample example = new SystemParameterExample();

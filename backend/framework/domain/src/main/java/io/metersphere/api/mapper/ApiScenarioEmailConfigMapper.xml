@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.metersphere.api.mapper.ApiScenarioEmailConfigMapper">
+  <resultMap id="BaseResultMap" type="io.metersphere.api.domain.ApiScenarioEmailConfig">
+    <id column="scenario_id" jdbcType="VARCHAR" property="scenarioId" />
+    <result column="email_recipients" jdbcType="VARCHAR" property="emailRecipients" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="update_time" jdbcType="BIGINT" property="updateTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    scenario_id, email_recipients, create_time, update_time, create_user, update_user
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from api_scenario_email_config
+    where scenario_id = #{scenarioId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from api_scenario_email_config
+    where scenario_id = #{scenarioId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="io.metersphere.api.domain.ApiScenarioEmailConfig">
+    insert into api_scenario_email_config (scenario_id, email_recipients, create_time, update_time, create_user, update_user)
+    values (#{scenarioId,jdbcType=VARCHAR}, #{emailRecipients,jdbcType=VARCHAR}, #{createTime,jdbcType=BIGINT}, 
+            #{updateTime,jdbcType=BIGINT}, #{createUser,jdbcType=VARCHAR}, #{updateUser,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="io.metersphere.api.domain.ApiScenarioEmailConfig">
+    insert into api_scenario_email_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="scenarioId != null">
+        scenario_id,
+      </if>
+      <if test="emailRecipients != null">
+        email_recipients,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="scenarioId != null">
+        #{scenarioId,jdbcType=VARCHAR},
+      </if>
+      <if test="emailRecipients != null">
+        #{emailRecipients,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="io.metersphere.api.domain.ApiScenarioEmailConfig">
+    update api_scenario_email_config
+    <set>
+      <if test="emailRecipients != null">
+        email_recipients = #{emailRecipients,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where scenario_id = #{scenarioId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="io.metersphere.api.domain.ApiScenarioEmailConfig">
+    update api_scenario_email_config
+    set email_recipients = #{emailRecipients,jdbcType=VARCHAR},
+        update_time = #{updateTime,jdbcType=BIGINT},
+        update_user = #{updateUser,jdbcType=VARCHAR}
+    where scenario_id = #{scenarioId,jdbcType=VARCHAR}
+  </update>
+</mapper>

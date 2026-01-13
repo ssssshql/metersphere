@@ -14,6 +14,7 @@ import io.metersphere.api.dto.scenario.*;
 import io.metersphere.api.service.ApiFileResourceService;
 import io.metersphere.api.service.ApiScenarioDataTransferService;
 import io.metersphere.api.service.ApiValidateService;
+import io.metersphere.api.service.scenario.ApiScenarioEmailConfigService;
 import io.metersphere.api.service.scenario.ApiScenarioLogService;
 import io.metersphere.api.service.scenario.ApiScenarioNoticeService;
 import io.metersphere.api.service.scenario.ApiScenarioRunService;
@@ -65,6 +66,8 @@ public class ApiScenarioController {
     private ApiFileResourceService apiFileResourceService;
     @Resource
     private ApiScenarioDataTransferService apiScenarioDataTransferService;
+    @Resource
+    private ApiScenarioEmailConfigService apiScenarioEmailConfigService;
 
     @PostMapping("/page")
     @Operation(summary = "接口测试-接口场景管理-场景列表(deleted 状态为 1 时为回收站数据)")
@@ -374,5 +377,21 @@ public class ApiScenarioController {
     @CheckOwner(resourceId = "#projectId", resourceType = "project")
     public void downloadImgById(@PathVariable String projectId, @PathVariable String fileId, HttpServletResponse httpServletResponse) {
         apiScenarioDataTransferService.downloadFile(projectId, fileId, SessionUtils.getUserId(), httpServletResponse);
+    }
+
+    @GetMapping("/email-config/{scenarioId}")
+    @Operation(summary = "接口测试-接口场景管理-获取场景邮件接收人配置")
+    @RequiresPermissions(PermissionConstants.PROJECT_API_SCENARIO_READ)
+    @CheckOwner(resourceId = "#scenarioId", resourceType = "api_scenario")
+    public ApiScenarioEmailConfigDTO getEmailConfig(@PathVariable String scenarioId) {
+        return apiScenarioEmailConfigService.getEmailConfig(scenarioId);
+    }
+
+    @PostMapping("/email-config")
+    @Operation(summary = "接口测试-接口场景管理-保存场景邮件接收人配置")
+    @RequiresPermissions(PermissionConstants.PROJECT_API_SCENARIO_UPDATE)
+    @CheckOwner(resourceId = "#request.getScenarioId()", resourceType = "api_scenario")
+    public void saveEmailConfig(@Validated @RequestBody ApiScenarioEmailConfigDTO request) {
+        apiScenarioEmailConfigService.saveEmailConfig(request, SessionUtils.getUserId());
     }
 }

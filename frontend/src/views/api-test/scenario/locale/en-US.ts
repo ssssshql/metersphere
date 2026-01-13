@@ -294,4 +294,10 @@ export default {
   'apiScenario.export.type.all': 'All data',
   'apiScenario.export.simple.tooltip1': 'Close: Export referenced and copied steps as custom requests',
   'apiScenario.export.simple.tooltip2': 'Open: Export referenced and copied steps as native data',
+  // Email recipients configuration
+  'apiScenario.emailConfig.title': 'Email Configuration',
+  'apiScenario.emailConfig.recipients': 'Email Recipients',
+  'apiScenario.emailConfig.recipientsPlaceholder': 'Enter email addresses, separated by commas',
+  'apiScenario.emailConfig.recipientsTip': 'After the scenario is executed successfully, the system will automatically send a test report email to the configured recipients; if no recipients are configured, no email will be sent',
+  'apiScenario.emailConfig.saveSuccess': 'Email configuration saved successfully',
 };

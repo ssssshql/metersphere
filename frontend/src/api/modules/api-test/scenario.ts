@@ -37,6 +37,7 @@ import {
   ScenarioBatchEditScheduleUrl,
   ScenarioBatchExportLogUrl,
   ScenarioCopyStepFilesUrl,
+  ScenarioEmailConfigUrl,
   ScenarioExportLogUrl,
   ScenarioHistoryUrl,
   ScenarioPageUrl,
@@ -385,4 +386,16 @@ export function scenarioCopyStepFiles(data: GetScenarioUnSaveStepParams) {
     url: ScenarioCopyStepFilesUrl,
     data,
   });
+}
+
+// 获取场景邮件接收人配置
+export function getScenarioEmailConfig(scenarioId: string) {
+  return MSR.get<{ scenarioId: string; emailRecipients: string }>({
+    url: `${ScenarioEmailConfigUrl}/${scenarioId}`,
+  });
+}
+
+// 保存场景邮件接收人配置
+export function saveScenarioEmailConfig(data: { scenarioId: string; emailRecipients: string }) {
+  return MSR.post({ url: ScenarioEmailConfigUrl, data });
 }

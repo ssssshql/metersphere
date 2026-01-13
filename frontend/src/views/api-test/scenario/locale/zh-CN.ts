@@ -287,4 +287,10 @@ export default {
   'apiScenario.export.type.all': '保留引用关系',
   'apiScenario.export.simple.tooltip1': '关闭：导出引用和复制的步骤处理为自定义请求',
   'apiScenario.export.simple.tooltip2': '开启：导出引用和复制的步骤，保留接口、用例、场景的引用关系',
+  // 邮件接收人配置
+  'apiScenario.emailConfig.title': '邮件配置',
+  'apiScenario.emailConfig.recipients': '邮件接收人',
+  'apiScenario.emailConfig.recipientsPlaceholder': '请输入邮箱地址，多个邮箱以逗号分隔',
+  'apiScenario.emailConfig.recipientsTip': '场景执行成功后，系统将自动发送测试报告邮件给配置的接收人；如未配置接收人，则不发送邮件',
+  'apiScenario.emailConfig.saveSuccess': '邮件配置保存成功',
 };
