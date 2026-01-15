@@ -16,6 +16,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <pnpm.registry>https://registry.npmmirror.com</pnpm.registry>
   </properties>
 
   <build>
@@ -52,7 +53,7 @@
               "install", so unless you need to run some other yarn command,
               you can remove this whole <configuration> section.
               -->
-              <arguments>install</arguments>
+              <arguments>install -registry ${pnpm.registry}</arguments>
             </configuration>
           </execution>
           <execution>
