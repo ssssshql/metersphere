@@ -14,5 +14,5 @@
 ### 整体打包
 
 ```bash
-./mvnw clean package
+./mvnw clean package -DskipTests
 ```

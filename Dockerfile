@@ -2,12 +2,14 @@ FROM registry.fit2cloud.com/metersphere/alpine-openjdk21-jre
 
 LABEL maintainer="FIT2CLOUD <support@fit2cloud.com>"
 
-ARG MS_VERSION=dev
+ARG MS_VERSION="v3.6.7-lts"
 ARG DEPENDENCY=backend/app/target/dependency
 
 COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY ${DEPENDENCY}/META-INF /app/META-INF
 COPY ${DEPENDENCY}/BOOT-INF/classes /app
+
+COPY deployments /deployments
 
 # 静态文件
 COPY backend/app/src/main/resources/static /app/static
