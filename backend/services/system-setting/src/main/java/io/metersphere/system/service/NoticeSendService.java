@@ -244,7 +244,8 @@ public class NoticeSendService {
             // 只有场景执行成功或误报时才发送邮件
             String event = noticeModel.getEvent();
             if (!StringUtils.equals(event, NoticeConstants.Event.SCENARIO_EXECUTE_SUCCESSFUL)
-                    && !StringUtils.equals(event, NoticeConstants.Event.SCENARIO_EXECUTE_FAKE_ERROR)) {
+                    && !StringUtils.equals(event, NoticeConstants.Event.SCENARIO_EXECUTE_FAKE_ERROR)
+                    && !StringUtils.equals(event, NoticeConstants.Event.SCENARIO_EXECUTE_FAILED)) {
                 return;
             }
 
