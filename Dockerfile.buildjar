@@ -45,8 +45,8 @@ RUN mkdir -p /opt/jmeter/bin
 # 2. 从构建阶段拷贝打包产物（jar包）到运行目录
 COPY --from=builder /app/backend/app/target/app-3.x.jar /opt/app/app.jar
 
-# 3. 拷贝项目中的 jmeter.properties 到指定路径
-COPY --from=builder /app/backend/app/target/classes/jmeter/bin/jmeter.properties /opt/jmeter/bin/jmeter.properties
+# 3. 拷贝项目中的 jmeter配置 到指定路径
+COPY --from=builder /app/backend/app/target/classes/jmeter/bin/ /opt/jmeter/bin/
 
 # 4. 设置环境变量（编码、时区等）
 ENV LANG=C.UTF-8 \

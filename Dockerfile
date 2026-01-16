@@ -2,7 +2,7 @@ FROM registry.fit2cloud.com/metersphere/alpine-openjdk21-jre
 
 LABEL maintainer="FIT2CLOUD <support@fit2cloud.com>"
 
-ARG MS_VERSION="v3.6.7-lts"
+ARG MS_VERSION="dev"
 ARG DEPENDENCY=backend/app/target/dependency
 
 COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
