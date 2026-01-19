@@ -2,8 +2,12 @@ package io.metersphere.system.service;
 
 
 import io.metersphere.api.domain.ApiScenarioEmailConfig;
+import io.metersphere.api.domain.ApiScenarioReport;
 import io.metersphere.api.mapper.ApiScenarioEmailConfigMapper;
+import io.metersphere.api.mapper.ApiScenarioReportMapper;
 import io.metersphere.project.domain.Project;
+import io.metersphere.sdk.domain.Environment;
+import io.metersphere.sdk.mapper.EnvironmentMapper;
 import io.metersphere.sdk.util.LogUtils;
 import io.metersphere.system.notice.MessageDetail;
 import io.metersphere.system.notice.NoticeModel;
@@ -43,6 +47,10 @@ public class NoticeSendService {
     private MessageDetailService messageDetailService;
     @Resource
     private ApiScenarioEmailConfigMapper apiScenarioEmailConfigMapper;
+    @Resource
+    private EnvironmentMapper environmentMapper;
+    @Resource
+    private ApiScenarioReportMapper apiScenarioReportMapper;
 
     private AbstractNoticeSender getNoticeSender(MessageDetail messageDetail) {
         AbstractNoticeSender noticeSender;
@@ -286,10 +294,12 @@ public class NoticeSendService {
      */
     private String buildEmailContent(Map<String, Object> paramMap) {
         String scenarioName = getStringValue(paramMap, "name");
-        String reportStatus = getStringValue(paramMap, "reportStatus");
-        boolean isSuccess = "成功".equals(reportStatus) || "SUCCESS".equalsIgnoreCase(getStringValue(paramMap, "lastReportStatus"));
+        boolean isSuccess = "SUCCESS".equalsIgnoreCase(getStringValue(paramMap, "lastReportStatus"));
         String statusColor = isSuccess ? "#00C261" : "#ED0303";
         String reportUrl = getStringValue(paramMap, "reportUrl");
+        Environment environment = environmentMapper.selectByPrimaryKey(getStringValue(paramMap, "environmentId"));
+        ApiScenarioReport lastReport = apiScenarioReportMapper.selectByPrimaryKey(getStringValue(paramMap, "lastReportId"));
+        String reportStatus = lastReport.getStatus().equals("SUCCESS") ? "成功" : "失败";
 
         StringBuilder html = new StringBuilder();
         html.append("<!DOCTYPE html>");
@@ -301,15 +311,16 @@ public class NoticeSendService {
 
         // 信息列表
         html.append("<table cellpadding='0' cellspacing='0' border='0' style='line-height:1.8;'>");
-        appendInfoRow(html, "环境", getStringValue(paramMap, "environment"));
+
+        appendInfoRow(html, "环境", environment!=null? environment.getName():"未知环境");
         appendInfoRow(html, "执行人", getStringValue(paramMap, "OPERATOR"));
         html.append("<tr><td style='color:#666;padding-right:16px;'>测试结果</td><td style='font-weight:bold;color:").append(statusColor).append(";'>").append(reportStatus).append("</td></tr>");
-        appendInfoRow(html, "测试开始时间", formatTime(paramMap.get("startTime")));
-        appendInfoRow(html, "测试结束时间", formatTime(paramMap.get("endTime")));
+        appendInfoRow(html, "测试开始时间", formatTime(lastReport.getStartTime()));
+        appendInfoRow(html, "测试结束时间", formatTime(lastReport.getEndTime()));
         appendInfoRow(html, "接口总数", getStringValue(paramMap, "stepTotal"));
-        appendInfoRow(html, "成功接口数", getStringValue(paramMap, "successCount"));
-        appendInfoRow(html, "失败接口数", getStringValue(paramMap, "errorCount"));
-        appendInfoRow(html, "成功率", getStringValue(paramMap, "requestPassRate") + "%");
+        appendInfoRow(html, "成功接口数", String.valueOf(lastReport.getSuccessCount()));
+        appendInfoRow(html, "失败接口数", String.valueOf(lastReport.getErrorCount()));
+        appendInfoRow(html, "成功率", lastReport.getRequestPassRate() + "%");
         html.append("</table>");
 
         // 报告链接
