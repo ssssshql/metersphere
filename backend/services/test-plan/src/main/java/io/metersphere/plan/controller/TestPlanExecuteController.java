@@ -3,6 +3,8 @@ package io.metersphere.plan.controller;
 import io.metersphere.plan.constants.TestPlanResourceConfig;
 import io.metersphere.plan.dto.request.TestPlanBatchExecuteRequest;
 import io.metersphere.plan.dto.request.TestPlanExecuteRequest;
+import io.metersphere.plan.domain.TestPlanReportExtension;
+import io.metersphere.plan.mapper.TestPlanReportExtensionMapper;
 import io.metersphere.plan.service.TestPlanExecuteService;
 import io.metersphere.plan.service.TestPlanLogService;
 import io.metersphere.plan.service.TestPlanManagementService;
@@ -37,6 +39,8 @@ public class TestPlanExecuteController {
     private TestPlanExecuteService testPlanExecuteService;
     @Resource
     private ProjectService projectService;
+    @Resource
+    private TestPlanReportExtensionMapper testPlanReportExtensionMapper;
 
     private static final String NULL_KEY = "-";
 
@@ -48,6 +52,16 @@ public class TestPlanExecuteController {
     public String startExecute(@Validated @RequestBody TestPlanExecuteRequest request) {
         testPlanManagementService.checkModuleIsOpen(request.getExecuteId(), TestPlanResourceConfig.CONFIG_TEST_PLAN, Collections.singletonList(TestPlanResourceConfig.CONFIG_TEST_PLAN));
         String reportId = IDGenerator.nextStr();
+
+        if (StringUtils.isNotBlank(request.getDeployVersion())) {
+            TestPlanReportExtension extension = new TestPlanReportExtension();
+            extension.setId(IDGenerator.nextStr());
+            extension.setReportId(reportId);
+            extension.setDeployTime(request.getDeployTime());
+            extension.setDeployVersion(request.getDeployVersion());
+            testPlanReportExtensionMapper.insert(extension);
+        }
+
         Thread.startVirtualThread(() ->
                 testPlanExecuteService.singleExecuteTestPlan(request, reportId, SessionUtils.getUserId())
         );

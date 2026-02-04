@@ -7,6 +7,7 @@ import io.metersphere.api.domain.ApiReportRelateTaskExample;
 import io.metersphere.api.mapper.ApiReportRelateTaskMapper;
 import io.metersphere.engine.EngineFactory;
 import io.metersphere.engine.MsHttpClient;
+import io.metersphere.plan.mapper.TestPlanReportExtensionMapper;
 import io.metersphere.project.domain.Project;
 import io.metersphere.project.domain.ProjectApplication;
 import io.metersphere.project.domain.ProjectApplicationExample;
@@ -72,6 +73,8 @@ import java.util.stream.Stream;
 @Transactional(rollbackFor = Exception.class)
 public class BaseTaskHubService {
 
+    @Resource
+    private TestPlanReportExtensionMapper testPlanReportExtensionMapper;
     @Resource
     private ExtExecTaskMapper extExecTaskMapper;
     @Resource
@@ -676,6 +679,8 @@ public class BaseTaskHubService {
     }
 
     public void deleteTask(String id, String orgId, String projectId) {
+        // 删除扩展信息
+        this.deleteExtensionByTaskId(id);
         //1.删除任务
         extExecTaskMapper.deleteTaskByIds(List.of(id), orgId, projectId);
         //2.删除任务明细
@@ -712,6 +717,8 @@ public class BaseTaskHubService {
 
     public void batchDeleteTask(List<String> ids, String orgId, String projectId) {
         if (CollectionUtils.isNotEmpty(ids)) {
+            // 删除扩展信息
+            ids.forEach(this::deleteExtensionByTaskId);
             //1.删除任务
             extExecTaskMapper.deleteTaskByIds(ids, orgId, projectId);
             //2.删除任务明细
@@ -721,6 +728,35 @@ public class BaseTaskHubService {
             taskItem.setDeleted(true);
             execTaskItemMapper.updateByExampleSelective(taskItem, itemExample);
             handleStopTaskAsync(ids);
+        }
+    }
+
+    private void deleteExtensionByTaskId(String taskId) {
+        List<String> resourceIds = new ArrayList<>();
+        resourceIds.add(taskId);
+
+        ExecTaskItemExample itemExample = new ExecTaskItemExample();
+        itemExample.createCriteria().andTaskIdEqualTo(taskId);
+        List<ExecTaskItem> items = execTaskItemMapper.selectByExample(itemExample);
+        if (CollectionUtils.isNotEmpty(items)) {
+            resourceIds.addAll(items.stream().map(ExecTaskItem::getId).toList());
+        }
+
+        this.deleteExtensionByResourceIds(resourceIds);
+    }
+
+    private void deleteExtensionByResourceIds(List<String> resourceIds) {
+        if (CollectionUtils.isEmpty(resourceIds)) {
+            return;
+        }
+        ApiReportRelateTaskExample example = new ApiReportRelateTaskExample();
+        example.createCriteria().andTaskResourceIdIn(resourceIds);
+        List<ApiReportRelateTask> relateTasks = apiReportRelateTaskMapper.selectByExample(example);
+        if (CollectionUtils.isNotEmpty(relateTasks)) {
+            relateTasks.stream()
+                    .map(ApiReportRelateTask::getReportId)
+                    .distinct()
+                    .forEach(reportId -> testPlanReportExtensionMapper.deleteByReportId(reportId));
         }
     }
 

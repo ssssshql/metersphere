@@ -9,6 +9,8 @@ import java.util.List;
 public interface BaseProjectMapper {
     Project selectOne();
 
+    Project selectByPrimaryKey(@Param("id") String id);
+
     List<Project> selectProjectByIdList(List<String> projectIds);
 
     List<String> getProjectIdByOrgId(@Param("orgId") String orgId);

@@ -1,14 +1,23 @@
 package io.metersphere.system.service;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import io.metersphere.api.domain.ApiScenarioEmailConfig;
 import io.metersphere.api.domain.ApiScenarioReport;
 import io.metersphere.api.mapper.ApiScenarioEmailConfigMapper;
 import io.metersphere.api.mapper.ApiScenarioReportMapper;
+import io.metersphere.plan.domain.TestPlanReportApiScenario;
+import io.metersphere.plan.domain.TestPlanReportExtension;
+import io.metersphere.plan.mapper.TestPlanReportApiScenarioMapper;
+import io.metersphere.plan.mapper.TestPlanReportExtensionMapper;
 import io.metersphere.project.domain.Project;
 import io.metersphere.sdk.domain.Environment;
+import io.metersphere.sdk.domain.EnvironmentBlob;
+import io.metersphere.sdk.mapper.EnvironmentBlobMapper;
 import io.metersphere.sdk.mapper.EnvironmentMapper;
 import io.metersphere.sdk.util.LogUtils;
+import io.metersphere.system.mapper.BaseProjectMapper;
 import io.metersphere.system.notice.MessageDetail;
 import io.metersphere.system.notice.NoticeModel;
 import io.metersphere.system.notice.constants.NoticeConstants;
@@ -23,9 +32,13 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import static org.springframework.ai.model.ModelOptionsUtils.OBJECT_MAPPER;
 
 @Component
 public class NoticeSendService {
@@ -51,6 +64,14 @@ public class NoticeSendService {
     private EnvironmentMapper environmentMapper;
     @Resource
     private ApiScenarioReportMapper apiScenarioReportMapper;
+    @Resource
+    private BaseProjectMapper baseProjectMapper;
+    @Resource
+    private EnvironmentBlobMapper environmentBlobMapper;
+    @Resource
+    private TestPlanReportExtensionMapper testPlanReportExtensionMapper;
+    @Resource
+    private TestPlanReportApiScenarioMapper testPlanReportApiScenarioMapper;
 
     private AbstractNoticeSender getNoticeSender(MessageDetail messageDetail) {
         AbstractNoticeSender noticeSender;
@@ -273,13 +294,18 @@ public class NoticeSendService {
                 return;
             }
 
+            // 测试报告
+            ApiScenarioReport lastReport = apiScenarioReportMapper.selectByPrimaryKey(getStringValue(paramMap, "lastReportId"));
+            // 项目
+            Project project = baseProjectMapper.selectByPrimaryKey(lastReport.getProjectId());
+
             // 构建邮件标题
             String scenarioName = getStringValue(paramMap, "name");
-            String executionTime = formatTime(paramMap.get("startTime"));
-            String subject = String.format("【MS】%s_%s_场景测试报告", scenarioName, executionTime);
+            String executionTime = formatTime(lastReport.getStartTime());
+            String subject = String.format("【MS】%s-%s_%s_场景测试报告", project.getName(), scenarioName, executionTime);
 
             // 构建邮件正文
-            String content = buildEmailContent(paramMap);
+            String content = buildEmailContent(paramMap, lastReport, project);
 
             // 发送邮件
             mailNoticeSender.sendWithNoSign(subject, content, recipients, null);
@@ -292,13 +318,21 @@ public class NoticeSendService {
     /**
      * 构建邮件正文内容 - 简约风格
      */
-    private String buildEmailContent(Map<String, Object> paramMap) {
+    private String buildEmailContent(Map<String, Object> paramMap, ApiScenarioReport lastReport, Project project) {
         String scenarioName = getStringValue(paramMap, "name");
         boolean isSuccess = "SUCCESS".equalsIgnoreCase(getStringValue(paramMap, "lastReportStatus"));
         String statusColor = isSuccess ? "#00C261" : "#ED0303";
         String reportUrl = getStringValue(paramMap, "reportUrl");
         Environment environment = environmentMapper.selectByPrimaryKey(getStringValue(paramMap, "environmentId"));
-        ApiScenarioReport lastReport = apiScenarioReportMapper.selectByPrimaryKey(getStringValue(paramMap, "lastReportId"));
+
+        // 环境url
+        String environmentUrl = "-";
+        EnvironmentBlob environmentBlob = environmentBlobMapper.selectByPrimaryKey(environment.getId());
+        if (environmentBlob != null) {
+            String url = getHttpConfigFirstUrl(new String(environmentBlob.getConfig()));
+            environmentUrl = url!=null?url:"-";
+        }
+
         String reportStatus = lastReport.getStatus().equals("SUCCESS") ? "成功" : "失败";
 
         StringBuilder html = new StringBuilder();
@@ -312,7 +346,17 @@ public class NoticeSendService {
         // 信息列表
         html.append("<table cellpadding='0' cellspacing='0' border='0' style='line-height:1.8;'>");
 
-        appendInfoRow(html, "环境", environment!=null? environment.getName():"未知环境");
+        appendInfoRow(html, "项目名称", project.getName());
+        appendInfoRow(html, "环境URL", environmentUrl);
+
+        if(paramMap.containsKey("plan_report_api_scenario_id")){
+            TestPlanReportApiScenario planReportApiScenario = testPlanReportApiScenarioMapper.selectByPrimaryKey(getStringValue(paramMap, "plan_report_api_scenario_id"));
+            TestPlanReportExtension extension = testPlanReportExtensionMapper.selectByReportId(planReportApiScenario.getTestPlanReportId());
+            appendInfoRow(html, "版本号", extension.getDeployVersion());
+            appendInfoRow(html, "部署时间", formatTime(extension.getDeployTime()));
+        }
+
+//        appendInfoRow(html, "环境", environment!=null? environment.getName():"未知环境");
         appendInfoRow(html, "执行人", getStringValue(paramMap, "OPERATOR"));
         html.append("<tr><td style='color:#666;padding-right:16px;'>测试结果</td><td style='font-weight:bold;color:").append(statusColor).append(";'>").append(reportStatus).append("</td></tr>");
         appendInfoRow(html, "测试开始时间", formatTime(lastReport.getStartTime()));
@@ -357,6 +401,55 @@ public class NoticeSendService {
             return sdf.format(new java.util.Date(time));
         } catch (Exception e) {
             return "-";
+        }
+    }
+
+    /**
+     * 从JSON文本中安全获取httpConfig第一个元素的url值
+     * @param jsonText JSON字符串
+     * @return url值（如果不存在/异常则返回null）
+     */
+    public static String getHttpConfigFirstUrl(String jsonText) {
+        // 容错1：入参为空
+        if (jsonText == null || jsonText.trim().isEmpty()) {
+            return null;
+        }
+
+        try {
+            // 解析JSON为JsonNode（树形结构，方便逐层获取）
+            JsonNode rootNode = OBJECT_MAPPER.readTree(jsonText);
+
+            // 容错2：httpConfig字段不存在 或 不是数组
+            JsonNode httpConfigNode = rootNode.get("httpConfig");
+            if (httpConfigNode == null || !httpConfigNode.isArray()) {
+                return null;
+            }
+
+            // 容错3：httpConfig数组为空
+            if (httpConfigNode.size() == 0) {
+                return null;
+            }
+
+            // 获取第一个元素
+            JsonNode firstHttpConfig = httpConfigNode.get(0);
+
+            // 容错4：第一个元素没有url字段 或 url值为空
+            JsonNode urlNode = firstHttpConfig.get("url");
+            if (urlNode == null || urlNode.isNull() || urlNode.asText().trim().isEmpty()) {
+                return null;
+            }
+
+            // 返回url的字符串值
+            return urlNode.asText();
+
+        } catch (JsonProcessingException e) {
+            // 容错5：JSON格式错误导致解析失败
+            System.err.println("JSON解析异常：" + e.getMessage());
+            return null;
+        } catch (Exception e) {
+            // 兜底：其他未知异常
+            System.err.println("获取url异常：" + e.getMessage());
+            return null;
         }
     }
 

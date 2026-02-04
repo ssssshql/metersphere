@@ -3,8 +3,14 @@
 <mapper namespace="io.metersphere.system.mapper.BaseProjectMapper">
     <select id="selectOne" resultType="io.metersphere.project.domain.Project">
         SELECT *
-        FROM project WHERE enabled = 1
+        FROM project WHERE enable = 1
         LIMIT 1
+    </select>
+
+    <select id="selectByPrimaryKey" resultType="io.metersphere.project.domain.Project">
+        SELECT *
+        FROM project WHERE enable = 1
+        AND id = #{id,jdbcType=VARCHAR}
     </select>
 
     <select id="selectProjectByIdList" resultType="io.metersphere.project.domain.Project">

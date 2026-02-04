@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.metersphere.plan.mapper.TestPlanReportExtensionMapper">
+  <resultMap id="BaseResultMap" type="io.metersphere.plan.domain.TestPlanReportExtension">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="report_id" jdbcType="VARCHAR" property="reportId" />
+    <result column="deploy_time" jdbcType="BIGINT" property="deployTime" />
+    <result column="deploy_version" jdbcType="VARCHAR" property="deployVersion" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, report_id, deploy_time, deploy_version
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from test_plan_report_extension
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByReportId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from test_plan_report_extension
+    where report_id = #{reportId,jdbcType=VARCHAR}
+  </select>
+  <insert id="insert" parameterType="io.metersphere.plan.domain.TestPlanReportExtension">
+    insert into test_plan_report_extension (id, report_id, deploy_time, 
+      deploy_version)
+    values (#{id,jdbcType=VARCHAR}, #{reportId,jdbcType=VARCHAR}, #{deployTime,jdbcType=BIGINT}, 
+      #{deployVersion,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="io.metersphere.plan.domain.TestPlanReportExtension">
+    insert into test_plan_report_extension
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="reportId != null">
+        report_id,
+      </if>
+      <if test="deployTime != null">
+        deploy_time,
+      </if>
+      <if test="deployVersion != null">
+        deploy_version,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="reportId != null">
+        #{reportId,jdbcType=VARCHAR},
+      </if>
+      <if test="deployTime != null">
+        #{deployTime,jdbcType=BIGINT},
+      </if>
+      <if test="deployVersion != null">
+        #{deployVersion,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="io.metersphere.plan.domain.TestPlanReportExtension">
+    update test_plan_report_extension
+    <set>
+      <if test="reportId != null">
+        report_id = #{reportId,jdbcType=VARCHAR},
+      </if>
+      <if test="deployTime != null">
+        deploy_time = #{deployTime,jdbcType=BIGINT},
+      </if>
+      <if test="deployVersion != null">
+        deploy_version = #{deployVersion,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="io.metersphere.plan.domain.TestPlanReportExtension">
+    update test_plan_report_extension
+    set report_id = #{reportId,jdbcType=VARCHAR},
+      deploy_time = #{deployTime,jdbcType=BIGINT},
+      deploy_version = #{deployVersion,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <delete id="deleteByReportId" parameterType="java.lang.String">
+    delete from test_plan_report_extension
+    where report_id = #{reportId,jdbcType=VARCHAR}
+  </delete>
+</mapper>

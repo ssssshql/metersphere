@@ -19,4 +19,10 @@ public class TestPlanExecuteRequest {
     @Schema(description = "执行来源", allowableValues = {"MANUAL", "RUN", "SCHEDULE"}, requiredMode = Schema.RequiredMode.REQUIRED)
     private String executionSource = TaskTriggerMode.MANUAL.name();
 
+    @Schema(description = "gitlab部署时间")
+    private Long deployTime;
+
+    @Schema(description = "gitlab部署版本号")
+    private String deployVersion;
+
 }

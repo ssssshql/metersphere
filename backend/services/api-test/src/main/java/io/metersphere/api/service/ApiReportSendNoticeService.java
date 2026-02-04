@@ -205,6 +205,11 @@ public class ApiReportSendNoticeService {
         paramMap.put("requestPassRate", report.getRequestPassRate());
         paramMap.put("assertionPassRate", report.getAssertionPassRate());
 
+        if(noticeDTO.getResourceType().equals(ApiExecuteResourceType.PLAN_RUN_API_SCENARIO.name())){
+            // 设置 测试计划报告关联场景ID
+            paramMap.put("plan_report_api_scenario_id",noticeDTO.getResourceId());
+        }
+
         // TODO 暂时取一个环境处理
         String environmentId = noticeDTO.getRunModeConfig().getEnvironmentId();
         if (StringUtils.isNotEmpty(environmentId)) {
