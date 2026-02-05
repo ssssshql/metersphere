@@ -352,8 +352,10 @@ public class NoticeSendService {
         if(paramMap.containsKey("plan_report_api_scenario_id")){
             TestPlanReportApiScenario planReportApiScenario = testPlanReportApiScenarioMapper.selectByPrimaryKey(getStringValue(paramMap, "plan_report_api_scenario_id"));
             TestPlanReportExtension extension = testPlanReportExtensionMapper.selectByReportId(planReportApiScenario.getTestPlanReportId());
-            appendInfoRow(html, "版本号", extension.getDeployVersion());
-            appendInfoRow(html, "部署时间", formatTime(extension.getDeployTime()));
+            if(extension!=null){
+                appendInfoRow(html, "版本号", extension.getDeployVersion());
+                appendInfoRow(html, "部署时间", formatTime(extension.getDeployTime()));
+            }
         }
 
 //        appendInfoRow(html, "环境", environment!=null? environment.getName():"未知环境");
