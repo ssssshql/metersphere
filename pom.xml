@@ -203,15 +203,11 @@
     <repositories>
         <repository>
             <id>central</id>
-            <url>https://maven.aliyun.com/repository/central</url>
+            <url>https://repo.maven.apache.org/maven2</url>
         </repository>
         <repository>
             <id>metersphere-public</id>
             <url>https://repository.fit2cloud.com/repository/metersphere/</url>
-        </repository>
-        <repository>
-            <id>metersphere-snapshots</id>
-            <url>https://maven.aliyun.com/repository/central</url>
         </repository>
     </repositories>
     <pluginRepositories>
@@ -222,10 +218,6 @@
         <pluginRepository>
             <id>metersphere-public</id>
             <url>https://repository.fit2cloud.com/repository/metersphere/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>metersphere-snapshots</id>
-            <url>https://maven.aliyun.com/repository/central</url>
         </pluginRepository>
     </pluginRepositories>
 
