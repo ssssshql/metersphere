@@ -14,35 +14,21 @@
 </p>
 <hr />
 
-MeterSphere 是新一代的开源持续测试工具，让软件测试工作更简单、更高效，不再成为持续交付的瓶颈。
+MeterSphere 是新一代的开源持续测试工具，内置 AI 助手，让软件测试工作更简单、更高效，不再成为持续交付的瓶颈。
 
--   **AI 赋能**：内置 AI 助手，支持 AI 生成功能用例、接口用例等，提升测试效率；
--   **测试管理**：从测试用例管理，到测试计划执行、缺陷管理、测试报告生成，具有远超 TestLink 等传统测试管理工具的使用体验；
--   **接口测试**：集 Postman 的易用与 JMeter 的灵活于一体，接口调试、接口定义、接口 Mock、场景自动化、接口报告，你想要的都有；
+-   **AI 赋能**：内置基于大模型的 AI 助手，支持 AI 生成功能用例、接口用例等，提升测试效率；
+-   **测试管理**：从测试用例管理，到测试计划执行、缺陷管理、测试报告生成，具有远超传统测试管理工具的使用体验；
+-   **接口测试**：集 Postman 的易用与 JMeter 的灵活于一体，接口调试、接口定义、接口 Mock、场景自动化、接口报告，端到端支持；
 -   **团队协作**：采用“系统-组织-项目”分层设计理念，帮助用户摆脱单机测试工具的束缚，方便快捷地开展团队协作；
--   **插件体系**：提供各种类别的插件，用户可以按需取用，快速实现 MeterSphere 测试能力的扩展以及与 DevOps 流水线的集成。
+-   **插件体系**：提供各种类别的插件，快速实现 MeterSphere 测试能力的扩展以及与 DevOps 流水线的集成。
 
 ## 快速开始
 
-```
-docker run -d -p 8081:8081 --name=metersphere -v ~/.metersphere/data:/opt/metersphere/data metersphere/metersphere-ce-allinone
-
-# 用户名: admin
-# 密码: metersphere
-```
-
-你也可以通过 [1Panel 应用商店](https://1panel.cn/) 快速部署 MeterSphere。
+你可以通过 [1Panel 应用商店](https://1panel.cn/) 快速部署 MeterSphere。
 
 如果是内网环境，推荐使用 [离线安装包方式](https://community.fit2cloud.com/#/products/metersphere/downloads) 进行安装部署。
 
-如你有更多问题，可以通过论坛和技术交流群与我们交流。
-
--   [案例研究](/use-cases.md)
--   [论坛求助](https://bbs.fit2cloud.com/c/ms/8)
--   技术交流群
-
-<img width="180" height="180" alt="contact_ms_qr" src="https://metersphere.oss-cn-hangzhou.aliyuncs.com/img/wechat-helper.png" />
-
+如你有更多问题，可以通过[论坛](https://bbs.fit2cloud.com/c/ms/8)我们交流。
 
 ## UI 展示
 
@@ -67,21 +53,9 @@ docker run -d -p 8081:8081 --name=metersphere -v ~/.metersphere/data:/opt/meters
 
 ## 版本说明
 
-MeterSphere 按年发布 LTS（Long Term Support）版本。
+MeterSphere 当前版本为 V3，V1 和 V2 版本已停止维护。
 
-- v1.10-lts：发布时间为 2021 年 5 月 27 日，目前已经停止维护；
-- v1.20-lts：发布时间为 2022 年 4 月 27 日，目前已经停止维护；
-- v2.10-lts：发布时间为 2023 年 5 月 25 日，仅进行必要的安全类 Bug 修复和严重 Bug 修复。
-
-与 MeterSphere v1.x 和 v2.x 相比，MeterSphere v3.x 产品定位发生变化，聚焦做好测试管理和接口测试，不再提供性能测试和 UI 测试相关的功能和能力，也不支持从 v1.x 和 v2.x 版本升级到 v3.x。
-
-MeterSphere v3.x 的版本发布计划：
-
-- 2024 年 5 月 30 日：发布 v3.0 beta 版本；
-- 2024 年 6 月 27 日：发布 v3.0 正式版本；
-- 2024 年 12 月 26 日：发布 v3.6-lts LTS 版本。
-
-MeterSphere 产品版本分为社区版和企业版，详情请参见：[MeterSphere 产品版本对比](https://metersphere.io/v3/pricing.html)
+MeterSphere V3 分为社区版和企业版，详情请参见：[MeterSphere 产品版本对比](https://metersphere.io/pricing.html)
 
 ## 技术栈
 
@@ -93,7 +67,6 @@ MeterSphere 产品版本分为社区版和企业版，详情请参见：[MeterSp
 
 ## 插件
 
-- [TAPD](https://www.tapd.cn/) 需求和缺陷同步插件：通过调用 TAPD 企业版本提供的 API 接口（[TAPD 企业版（API）申请](https://jsj.top/f/Lpk1sh)），将 MeterSphere 的测试用例和 TAPD 需求项进行关联，以及将 MeterSphere 和 TAPD 两个应用的缺陷进行双向同步。
 - 禅道需求和缺陷同步插件：将 MeterSphere 的测试用例和禅道需求项进行关联，以及将 MeterSphere 和禅道两个应用的缺陷进行双向同步。
 - JIRA 需求和缺陷同步插件：将 MeterSphere 的测试用例和 JIRA 需求项进行关联，以及将 MeterSphere 和 JIRA 两个应用的缺陷进行双向同步。
 - [Jenkins](https://www.jenkins.io/) 持续集成插件：实现在 Jenkins 流水线中触发并自动执行 MeterSphere 测试计划。
@@ -103,11 +76,11 @@ MeterSphere 产品版本分为社区版和企业版，详情请参见：[MeterSp
 
 ## 飞致云的其他明星项目
 
+- [1Panel](https://github.com/1panel-dev/1panel/) - 现代化、开源的 Linux 服务器运维管理面板
+- [JumpServer](https://github.com/jumpserver/jumpserver/) - 广受欢迎的开源堡垒机
 - [DataEase](https://github.com/dataease/dataease/) - 人人可用的开源 BI 工具
 - [SQLBot](https://github.com/dataease/SQLBot) - 基于大模型和 RAG 的开源智能问数系统
-- [1Panel](https://github.com/1panel-dev/1panel/) - 现代化、开源的 Linux 服务器运维管理面板
 - [MaxKB](https://github.com/1panel-dev/MaxKB/) - 强大易用的企业级智能体平台
-- [JumpServer](https://github.com/jumpserver/jumpserver/) - 广受欢迎的开源堡垒机
 - [Cordys CRM](https://github.com/1Panel-dev/CordysCRM) - 新一代的开源 AI CRM 系统
 - [Halo](https://github.com/halo-dev/halo/) - 强大易用的开源建站工具
 
