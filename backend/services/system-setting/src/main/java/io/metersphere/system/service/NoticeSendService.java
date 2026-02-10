@@ -33,10 +33,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.springframework.ai.model.ModelOptionsUtils.OBJECT_MAPPER;
 
@@ -298,14 +296,42 @@ public class NoticeSendService {
             ApiScenarioReport lastReport = apiScenarioReportMapper.selectByPrimaryKey(getStringValue(paramMap, "lastReportId"));
             // 项目
             Project project = baseProjectMapper.selectByPrimaryKey(lastReport.getProjectId());
+            // 环境
+            Environment environment = environmentMapper.selectByPrimaryKey(getStringValue(paramMap, "environmentId"));
 
             // 构建邮件标题
             String scenarioName = getStringValue(paramMap, "name");
-            String executionTime = formatTime(lastReport.getStartTime());
-            String subject = String.format("【MS】%s-%s_%s_场景测试报告", project.getName(), scenarioName, executionTime);
+//            String executionTime = formatTime(lastReport.getStartTime());
+
+            // 部署版本、部署时间
+            TestPlanReportExtension extension = null;
+            if(paramMap.containsKey("plan_report_api_scenario_id")){
+                TestPlanReportApiScenario planReportApiScenario = testPlanReportApiScenarioMapper.selectByPrimaryKey(getStringValue(paramMap, "plan_report_api_scenario_id"));
+                extension = testPlanReportExtensionMapper.selectByReportId(planReportApiScenario.getTestPlanReportId());
+            }
+
+            // 测试结果
+            String reportStatus = lastReport.getStatus().equals("SUCCESS") ? "成功" : "失败";
+
+            // 核心代码
+            String prefix = "【MS报告】";
+            // 收集所有需要拼接的字段，按顺序放入数组
+            String[] fields = {
+                    project != null ? project.getName() : null,
+                    scenarioName,
+                    environment != null ? environment.getName() : null,
+                    extension != null ? extension.getDeployVersion() : null,
+                    reportStatus
+            };
+            // 流式过滤：去掉null和纯空白字符串，再用下划线拼接
+            String fieldStr = Arrays.stream(fields)
+                    .filter(str -> str != null && !str.isBlank())
+                    .collect(Collectors.joining("_"));
+            // 最终标题（前缀+拼接后的字段）
+            String subject = prefix + fieldStr;
 
             // 构建邮件正文
-            String content = buildEmailContent(paramMap, lastReport, project);
+            String content = buildEmailContent(paramMap, lastReport, project, environment, extension);
 
             // 发送邮件
             mailNoticeSender.sendWithNoSign(subject, content, recipients, null);
@@ -318,12 +344,11 @@ public class NoticeSendService {
     /**
      * 构建邮件正文内容 - 简约风格
      */
-    private String buildEmailContent(Map<String, Object> paramMap, ApiScenarioReport lastReport, Project project) {
+    private String buildEmailContent(Map<String, Object> paramMap, ApiScenarioReport lastReport, Project project, Environment environment, TestPlanReportExtension extension) {
         String scenarioName = getStringValue(paramMap, "name");
         boolean isSuccess = "SUCCESS".equalsIgnoreCase(getStringValue(paramMap, "lastReportStatus"));
         String statusColor = isSuccess ? "#00C261" : "#ED0303";
         String reportUrl = getStringValue(paramMap, "reportUrl");
-        Environment environment = environmentMapper.selectByPrimaryKey(getStringValue(paramMap, "environmentId"));
 
         // 环境url
         String environmentUrl = "-";
@@ -349,13 +374,9 @@ public class NoticeSendService {
         appendInfoRow(html, "项目名称", project.getName());
         appendInfoRow(html, "环境URL", environmentUrl);
 
-        if(paramMap.containsKey("plan_report_api_scenario_id")){
-            TestPlanReportApiScenario planReportApiScenario = testPlanReportApiScenarioMapper.selectByPrimaryKey(getStringValue(paramMap, "plan_report_api_scenario_id"));
-            TestPlanReportExtension extension = testPlanReportExtensionMapper.selectByReportId(planReportApiScenario.getTestPlanReportId());
-            if(extension!=null){
-                appendInfoRow(html, "版本号", extension.getDeployVersion());
-                appendInfoRow(html, "部署时间", formatTime(extension.getDeployTime()));
-            }
+        if(extension!=null){
+            appendInfoRow(html, "版本号", extension.getDeployVersion());
+            appendInfoRow(html, "部署时间", formatTime(extension.getDeployTime()));
         }
 
 //        appendInfoRow(html, "环境", environment!=null? environment.getName():"未知环境");
@@ -399,8 +420,8 @@ public class NoticeSendService {
         }
         try {
             long time = Long.parseLong(timestamp.toString());
-            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            return sdf.format(new java.util.Date(time));
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return sdf.format(new Date(time));
         } catch (Exception e) {
             return "-";
         }
