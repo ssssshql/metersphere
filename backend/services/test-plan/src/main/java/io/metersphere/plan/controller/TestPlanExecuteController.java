@@ -10,6 +10,7 @@ import io.metersphere.plan.service.TestPlanLogService;
 import io.metersphere.plan.service.TestPlanManagementService;
 import io.metersphere.project.service.ProjectService;
 import io.metersphere.sdk.constants.PermissionConstants;
+import io.metersphere.sdk.util.LogUtils;
 import io.metersphere.system.dto.user.UserExtendDTO;
 import io.metersphere.system.log.annotation.Log;
 import io.metersphere.system.log.constants.OperationLogType;
@@ -52,6 +53,9 @@ public class TestPlanExecuteController {
     public String startExecute(@Validated @RequestBody TestPlanExecuteRequest request) {
         testPlanManagementService.checkModuleIsOpen(request.getExecuteId(), TestPlanResourceConfig.CONFIG_TEST_PLAN, Collections.singletonList(TestPlanResourceConfig.CONFIG_TEST_PLAN));
         String reportId = IDGenerator.nextStr();
+
+        // 打印 request 参数
+        LogUtils.info("开始执行测试计划，参数: {}", request);
 
         if (StringUtils.isNotBlank(request.getDeployVersion())) {
             TestPlanReportExtension extension = new TestPlanReportExtension();
