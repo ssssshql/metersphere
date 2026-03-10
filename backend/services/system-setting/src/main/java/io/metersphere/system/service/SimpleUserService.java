@@ -132,6 +132,8 @@ public class SimpleUserService {
     }
 
     private List<UserCreateInfo> saveUserAndRole(UserBatchCreateRequest userCreateDTO, String source, String operator, String requestPath) {
+        UserXpackService bean = CommonBeanFactory.getBean(UserXpackService.class);
+        System.out.println("bean");
         int responseCode = Objects.requireNonNull(CommonBeanFactory.getBean(UserXpackService.class)).GWHowToAddUser(userCreateDTO, source, operator);
         if (responseCode == 0) {
             operationLogService.batchAdd(userLogService.getBatchAddLogs(userCreateDTO.getUserInfoList(), operator, requestPath));

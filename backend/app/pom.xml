@@ -13,12 +13,17 @@
     <properties>
     </properties>
     <dependencies>
+<!--        <dependency>-->
+<!--            <groupId>io.metersphere</groupId>-->
+<!--            <artifactId>general-xpack-impl</artifactId>-->
+<!--            <version>3.6.7-lts</version>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${project.basedir}/lib/general-xpack-impl-3.6.7-lts.jar</systemPath>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>io.metersphere</groupId>
             <artifactId>general-xpack-impl</artifactId>
-            <version>3.6.7-lts</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/general-xpack-impl-3.6.7-lts.jar</systemPath>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>io.metersphere</groupId>
