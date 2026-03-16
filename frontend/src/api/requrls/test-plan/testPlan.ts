@@ -192,3 +192,5 @@ export const BatchAssociatedBugToMinderCaseUrl = '/test-plan/functional/case/min
 export const BatchAddBugToMinderCaseUrl = '/test-plan/functional/case/minder/batch/add-bug';
 // 测试计划/组-执行结果
 export const TaskResultUrl = '/test-plan/report/get-task';
+// 测试计划-邮件接收人配置
+export const TestPlanEmailConfigUrl = '/test-plan/email-config';

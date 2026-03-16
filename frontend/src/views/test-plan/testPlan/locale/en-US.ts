@@ -150,10 +150,16 @@ export default {
   'testPlan.testPlanGroup.enableScheduleTaskSuccess': 'Start the scheduled task successfully',
   'testPlan.testPlanGroup.closeScheduleTaskSuccess': 'Scheduled mission closed successfully',
   'testPlan.plan': 'Test plan',
-  'testPlan.planTip':
-    '1. Create a test set for business classification testing; 2. Select the test set associated use case',
+  'testPlan.planTip':  '1. Create a test set for business classification testing; 2. Select the test set associated use case',
   'testPlan.planStartToEndTimeTip': 'The test plan timed out',
   'testPlan.planConfigReport': 'Configuration Report',
   'testPlan.planAutomaticGeneration': 'Automatic generation',
   'testPlan.caseType': 'Use Case types',
+  'testPlan.testPlanIndex.emailConfig': 'Email Config',
+  'testPlan.testPlanIndex.emailConfig.title': 'Email Recipient Configuration',
+  'testPlan.testPlanIndex.emailConfig.recipients': 'Email Recipients',
+  'testPlan.testPlanIndex.emailConfig.recipientsPlaceholder': 'Please enter email addresses, separated by commas',
+  'testPlan.testPlanIndex.emailConfig.recipientsTip': 'Separate multiple emails with commas, e.g., user1@example.com,user2@example.com',
+  'testPlan.testPlanIndex.emailConfig.recipientsFormatError': 'Invalid email format: {emails}',
+  'testPlan.testPlanIndex.emailConfig.saveSuccess': 'Saved successfully',
 };

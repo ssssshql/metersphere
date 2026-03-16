@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="io.metersphere.api.mapper.ApiScenarioEmailConfigMapper">
-  <resultMap id="BaseResultMap" type="io.metersphere.api.domain.ApiScenarioEmailConfig">
-    <id column="scenario_id" jdbcType="VARCHAR" property="scenarioId" />
+<mapper namespace="io.metersphere.plan.mapper.TestPlanEmailConfigMapper">
+  <resultMap id="BaseResultMap" type="io.metersphere.plan.domain.TestPlanEmailConfig">
+    <id column="test_plan_id" jdbcType="VARCHAR" property="testPlanId" />
     <result column="email_recipients" jdbcType="VARCHAR" property="emailRecipients" />
     <result column="create_time" jdbcType="BIGINT" property="createTime" />
     <result column="update_time" jdbcType="BIGINT" property="updateTime" />
@@ -10,35 +10,35 @@
     <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
   </resultMap>
   <sql id="Base_Column_List">
-    scenario_id, email_recipients, create_time, update_time, create_user, update_user
+    test_plan_id, email_recipients, create_time, update_time, create_user, update_user
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from api_scenario_email_config
-    where scenario_id = #{scenarioId,jdbcType=VARCHAR}
+    from test_plan_email_config
+    where test_plan_id = #{testPlanId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from api_scenario_email_config
-    where scenario_id = #{scenarioId,jdbcType=VARCHAR}
+    delete from test_plan_email_config
+    where test_plan_id = #{testPlanId,jdbcType=VARCHAR}
   </delete>
-  <delete id="deleteByScenarioIds" parameterType="java.util.List">
-    delete from api_scenario_email_config
-    where scenario_id in
-    <foreach collection="list" item="scenarioId" open="(" separator="," close=")">
-      #{scenarioId,jdbcType=VARCHAR}
+  <delete id="deleteByTestPlanIds" parameterType="java.util.List">
+    delete from test_plan_email_config
+    where test_plan_id in
+    <foreach collection="list" item="testPlanId" open="(" separator="," close=")">
+      #{testPlanId,jdbcType=VARCHAR}
     </foreach>
   </delete>
-  <insert id="insert" parameterType="io.metersphere.api.domain.ApiScenarioEmailConfig">
-    insert into api_scenario_email_config (scenario_id, email_recipients, create_time, update_time, create_user, update_user)
-    values (#{scenarioId,jdbcType=VARCHAR}, #{emailRecipients,jdbcType=VARCHAR}, #{createTime,jdbcType=BIGINT}, 
+  <insert id="insert" parameterType="io.metersphere.plan.domain.TestPlanEmailConfig">
+    insert into test_plan_email_config (test_plan_id, email_recipients, create_time, update_time, create_user, update_user)
+    values (#{testPlanId,jdbcType=VARCHAR}, #{emailRecipients,jdbcType=VARCHAR}, #{createTime,jdbcType=BIGINT}, 
             #{updateTime,jdbcType=BIGINT}, #{createUser,jdbcType=VARCHAR}, #{updateUser,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="io.metersphere.api.domain.ApiScenarioEmailConfig">
-    insert into api_scenario_email_config
+  <insert id="insertSelective" parameterType="io.metersphere.plan.domain.TestPlanEmailConfig">
+    insert into test_plan_email_config
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="scenarioId != null">
-        scenario_id,
+      <if test="testPlanId != null">
+        test_plan_id,
       </if>
       <if test="emailRecipients != null">
         email_recipients,
@@ -57,8 +57,8 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="scenarioId != null">
-        #{scenarioId,jdbcType=VARCHAR},
+      <if test="testPlanId != null">
+        #{testPlanId,jdbcType=VARCHAR},
       </if>
       <if test="emailRecipients != null">
         #{emailRecipients,jdbcType=VARCHAR},
@@ -77,8 +77,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="io.metersphere.api.domain.ApiScenarioEmailConfig">
-    update api_scenario_email_config
+  <update id="updateByPrimaryKeySelective" parameterType="io.metersphere.plan.domain.TestPlanEmailConfig">
+    update test_plan_email_config
     <set>
       <if test="emailRecipients != null">
         email_recipients = #{emailRecipients,jdbcType=VARCHAR},
@@ -90,13 +90,13 @@
         update_user = #{updateUser,jdbcType=VARCHAR},
       </if>
     </set>
-    where scenario_id = #{scenarioId,jdbcType=VARCHAR}
+    where test_plan_id = #{testPlanId,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="io.metersphere.api.domain.ApiScenarioEmailConfig">
-    update api_scenario_email_config
+  <update id="updateByPrimaryKey" parameterType="io.metersphere.plan.domain.TestPlanEmailConfig">
+    update test_plan_email_config
     set email_recipients = #{emailRecipients,jdbcType=VARCHAR},
         update_time = #{updateTime,jdbcType=BIGINT},
         update_user = #{updateUser,jdbcType=VARCHAR}
-    where scenario_id = #{scenarioId,jdbcType=VARCHAR}
+    where test_plan_id = #{testPlanId,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -1,4 +1,4 @@
-package io.metersphere.api.domain;
+package io.metersphere.plan.domain;
 
 import io.metersphere.sdk.domain.BaseEmailConfig;
 import io.metersphere.validation.groups.Created;
@@ -13,14 +13,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 @Data
-public class ApiScenarioEmailConfig extends BaseEmailConfig implements Serializable {
-    @Schema(description = "场景ID", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotBlank(message = "{api_scenario_email_config.scenario_id.not_blank}", groups = {Created.class})
-    @Size(min = 1, max = 50, message = "{api_scenario_email_config.scenario_id.length_range}", groups = {Created.class, Updated.class})
-    private String scenarioId;
+public class TestPlanEmailConfig extends BaseEmailConfig implements Serializable {
+    @Schema(description = "测试计划ID", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "{test_plan_email_config.test_plan_id.not_blank}", groups = {Created.class})
+    @Size(min = 1, max = 50, message = "{test_plan_email_config.test_plan_id.length_range}", groups = {Created.class, Updated.class})
+    private String testPlanId;
 
     @Schema(description = "邮件接收人，多个邮箱以逗号分隔")
-    @Size(max = 2000, message = "{api_scenario_email_config.email_recipients.length_range}", groups = {Created.class, Updated.class})
+    @Size(max = 2000, message = "{test_plan_email_config.email_recipients.length_range}", groups = {Created.class, Updated.class})
     private String emailRecipients;
 
     @Schema(description = "创建时间")
@@ -38,7 +38,7 @@ public class ApiScenarioEmailConfig extends BaseEmailConfig implements Serializa
     private static final long serialVersionUID = 1L;
 
     public enum Column {
-        scenarioId("scenario_id", "scenarioId", "VARCHAR", false),
+        testPlanId("test_plan_id", "testPlanId", "VARCHAR", false),
         emailRecipients("email_recipients", "emailRecipients", "VARCHAR", false),
         createTime("create_time", "createTime", "BIGINT", false),
         updateTime("update_time", "updateTime", "BIGINT", false),

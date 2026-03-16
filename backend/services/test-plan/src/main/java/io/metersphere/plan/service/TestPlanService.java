@@ -70,6 +70,8 @@ public class TestPlanService extends TestPlanBaseUtilsService {
     @Resource
     private TestPlanConfigMapper testPlanConfigMapper;
     @Resource
+    private TestPlanEmailConfigMapper testPlanEmailConfigMapper;
+    @Resource
     private TestPlanLogService testPlanLogService;
     @Resource
     private TestPlanModuleMapper testPlanModuleMapper;
@@ -345,6 +347,9 @@ public class TestPlanService extends TestPlanBaseUtilsService {
         TestPlanConfigExample configExample = new TestPlanConfigExample();
         configExample.createCriteria().andTestPlanIdIn(testPlanIds);
         testPlanConfigMapper.deleteByExample(configExample);
+
+        //删除邮件配置
+        testPlanEmailConfigMapper.deleteByTestPlanIds(testPlanIds);
 
         TestPlanFollowerExample testPlanFollowerExample = new TestPlanFollowerExample();
         testPlanFollowerExample.createCriteria().andTestPlanIdIn(testPlanIds);

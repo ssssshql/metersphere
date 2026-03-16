@@ -19,6 +19,28 @@ export function validateEmail(email: string): boolean {
 }
 
 /**
+ * 校验多个邮箱（以逗号分隔）
+ * @param emails 邮箱字符串，多个邮箱以逗号分隔
+ * @returns { valid: boolean, invalidEmails: string[] }
+ */
+export function validateEmails(emails: string): { valid: boolean; invalidEmails: string[] } {
+  if (!emails || emails.trim() === '') {
+    return { valid: true, invalidEmails: [] };
+  }
+  const emailList = emails.split(',').map((email) => email.trim()).filter((email) => email !== '');
+  const invalidEmails: string[] = [];
+  emailList.forEach((email) => {
+    if (!validateEmail(email)) {
+      invalidEmails.push(email);
+    }
+  });
+  return {
+    valid: invalidEmails.length === 0,
+    invalidEmails,
+  };
+}
+
+/**
  * 校验手机号
  * @param phone 手机号
  * @returns boolean

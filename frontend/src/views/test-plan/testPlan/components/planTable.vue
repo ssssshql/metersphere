@@ -321,12 +321,76 @@
     </template>
     <executeHistoryTable v-if="executionHistoryDrawerVisible" :plan-id="activeRecord?.id" is-group />
   </MsDrawer>
+  <!-- 邮件接收人配置 -->
+  <a-modal
+    v-model:visible="showEmailConfigModal"
+    title-align="start"
+    class="ms-modal-upload ms-modal-medium"
+    :width="520"
+  >
+    <template #title>
+      <div class="flex items-center">
+        {{ t('testPlan.testPlanIndex.emailConfig.title') }}
+        <a-tooltip v-if="emailConfigRecord?.name" :content="emailConfigRecord.name">
+          <div class="ml-[4px] max-w-[200px] truncate text-[var(--color-text-4)]">
+            （{{ emailConfigRecord.name }}）
+          </div>
+        </a-tooltip>
+      </div>
+    </template>
+    <a-form ref="emailConfigFormRef" :model="emailConfigForm" layout="vertical">
+      <a-form-item
+        field="emailRecipients"
+        :label="t('testPlan.testPlanIndex.emailConfig.recipients')"
+        :rules="[
+          {
+            validator: (value: string, callback: (error?: string) => void) => {
+              if (value && value.trim()) {
+                const result = validateEmails(value);
+                if (!result.valid) {
+                  callback(t('testPlan.testPlanIndex.emailConfig.recipientsFormatError', { emails: result.invalidEmails.join(', ') }));
+                }
+              }
+              callback();
+            },
+          },
+        ]"
+      >
+        <a-textarea
+          v-model="emailConfigForm.emailRecipients"
+          :placeholder="t('testPlan.testPlanIndex.emailConfig.recipientsPlaceholder')"
+          :max-length="500"
+          :auto-size="{ minRows: 3, maxRows: 5 }"
+          allow-clear
+        />
+      </a-form-item>
+      <div class="text-[12px] text-[var(--color-text-4)]">
+        {{ t('testPlan.testPlanIndex.emailConfig.recipientsTip') }}
+      </div>
+    </a-form>
+    <template #footer>
+      <div class="flex justify-end">
+        <a-button type="secondary" :disabled="emailConfigLoading" @click="cancelEmailConfigModal">
+          {{ t('common.cancel') }}
+        </a-button>
+        <a-button
+          v-permission="['PROJECT_TEST_PLAN:READ+UPDATE']"
+          class="ml-3"
+          type="primary"
+          :loading="emailConfigLoading"
+          @click="saveEmailConfigModal"
+        >
+          {{ t('common.save') }}
+        </a-button>
+      </div>
+    </template>
+  </a-modal>
 </template>
 
 <script setup lang="ts">
   import { ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
-  import { Message } from '@arco-design/web-vue';
+  import { FormInstance, Message } from '@arco-design/web-vue';
   import { cloneDeep } from 'lodash-es';
   import dayjs from 'dayjs';
 
@@ -354,7 +418,6 @@
   import caseCountPopper from './caseCountPopper.vue';
   import ScheduledModal from './scheduledModal.vue';
   import StatusProgress from './statusProgress.vue';
-  import ExecutionStatus from '@/views/api-test/report/component/reportStatus.vue';
   import PlanExpandRow from '@/views/test-plan/testPlan/components/planExpandRow.vue';
 
   import {
@@ -372,8 +435,10 @@
     executeSinglePlan,
     getPlanPassRate,
     getTestPlanDetail,
+    getTestPlanEmailConfig,
     getTestPlanList,
     getTestPlanModule,
+    saveTestPlanEmailConfig,
     testPlanAndGroupCopy,
     updateTestPlan,
   } from '@/api/modules/test-plan/testPlan';
@@ -385,6 +450,7 @@
   import useGlobalStore from '@/store/modules/global';
   import { characterLimit, getGenerateId } from '@/utils';
   import { hasAnyPermission } from '@/utils/permission';
+  import { validateEmails } from '@/utils/validate';
 
   import { DragSortParams, ModuleTreeNode } from '@/models/common';
   import type {
@@ -786,11 +852,24 @@
           ]
         : [];
 
+    // 邮件配置操作
+    const emailConfigAction: ActionsItem[] =
+      planStatus !== 'ARCHIVED' && record.type === testPlanTypeEnum.TEST_PLAN
+        ? [
+            {
+              label: 'testPlan.testPlanIndex.emailConfig',
+              eventTag: 'emailConfig',
+              permission: ['PROJECT_TEST_PLAN:READ+UPDATE'],
+            },
+          ]
+        : [];
+
     // 已归档和已完成不展示归档
     if (planStatus === 'ARCHIVED' || planStatus === 'PREPARED' || planStatus === 'UNDERWAY') {
       return [
         ...copyAction,
         ...scheduledTaskAction,
+        ...emailConfigAction,
         ...reportAction,
         ...executeHistoryAction,
         {
@@ -805,6 +884,7 @@
       ...copyAction,
       ...archiveAction,
       ...scheduledTaskAction,
+      ...emailConfigAction,
       ...reportAction,
       ...executeHistoryAction,
       {
@@ -1548,6 +1628,56 @@
     executionHistoryDrawerVisible.value = true;
   }
 
+  // 邮件配置相关
+  const showEmailConfigModal = ref(false);
+  const emailConfigLoading = ref(false);
+  const emailConfigRecord = ref<TestPlanItem>();
+  const emailConfigFormRef = ref<FormInstance>();
+  const emailConfigForm = ref({
+    emailRecipients: '',
+  });
+
+  async function openEmailConfigModal(record: TestPlanItem) {
+    emailConfigRecord.value = record;
+    emailConfigForm.value.emailRecipients = '';
+    showEmailConfigModal.value = true;
+    try {
+      const res = await getTestPlanEmailConfig(record.id);
+      if (res && res.emailRecipients) {
+        emailConfigForm.value.emailRecipients = res.emailRecipients;
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  }
+
+  function cancelEmailConfigModal() {
+    showEmailConfigModal.value = false;
+    emailConfigForm.value.emailRecipients = '';
+  }
+
+  async function saveEmailConfigModal() {
+    try {
+      const valid = await emailConfigFormRef.value?.validate();
+      if (valid) {
+        return;
+      }
+      emailConfigLoading.value = true;
+      await saveTestPlanEmailConfig({
+        testPlanId: emailConfigRecord.value?.id || '',
+        emailRecipients: emailConfigForm.value.emailRecipients,
+      });
+      Message.success(t('testPlan.testPlanIndex.emailConfig.saveSuccess'));
+      cancelEmailConfigModal();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    } finally {
+      emailConfigLoading.value = false;
+    }
+  }
+
   function handleMoreActionSelect(item: ActionsItem, record: TestPlanItem) {
     switch (item.eventTag) {
       case 'copy':
@@ -1573,6 +1703,9 @@
         break;
       case 'executionHistory':
         openExecutionHistory(record);
+        break;
+      case 'emailConfig':
+        openEmailConfigModal(record);
         break;
       default:
         break;

@@ -502,7 +502,23 @@
       </div>
     </template>
     <a-form ref="emailConfigFormRef" :model="emailConfigForm" layout="vertical">
-      <a-form-item field="emailRecipients" :label="t('apiScenario.emailConfig.recipients')">
+      <a-form-item
+        field="emailRecipients"
+        :label="t('apiScenario.emailConfig.recipients')"
+        :rules="[
+          {
+            validator: (value: string, callback: (error?: string) => void) => {
+              if (value && value.trim()) {
+                const result = validateEmails(value);
+                if (!result.valid) {
+                  callback(t('apiScenario.emailConfig.recipientsFormatError', { emails: result.invalidEmails.join(', ') }));
+                }
+              }
+              callback();
+            },
+          },
+        ]"
+      >
         <a-textarea
           v-model="emailConfigForm.emailRecipients"
           :placeholder="t('apiScenario.emailConfig.recipientsPlaceholder')"
@@ -589,6 +605,7 @@
   import { characterLimit, operationWidth } from '@/utils';
   import { translateTextToPX } from '@/utils/css';
   import { hasAnyPermission } from '@/utils/permission';
+  import { validateEmails } from '@/utils/validate';
 
   import { Environment } from '@/models/apiTest/management';
   import { ApiScenarioScheduleConfig, ApiScenarioTableItem, ApiScenarioUpdateDTO } from '@/models/apiTest/scenario';
@@ -1354,6 +1371,10 @@
 
   async function saveEmailConfigModal() {
     try {
+      const valid = await emailConfigFormRef.value?.validate();
+      if (valid) {
+        return;
+      }
       emailConfigLoading.value = true;
       await saveScenarioEmailConfig({
         scenarioId: emailConfigRecord.value?.id || '',

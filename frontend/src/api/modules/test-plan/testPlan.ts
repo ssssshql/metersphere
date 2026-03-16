@@ -91,6 +91,7 @@ import {
   TestPlanCancelBugUrl,
   TestPlanCaseAssociatedPageUrl,
   TestPlanCaseDetailUrl,
+  TestPlanEmailConfigUrl,
   TestPlanGroupOptionsUrl,
   TestPlanScenarioAssociatedPageUrl,
   updateTestPlanModuleUrl,
@@ -536,4 +537,16 @@ export function batchAddBugToMinderCase(data: { request: BugEditFormObject; file
 // 测试计划/组-执行结果
 export function getTaskResult(id: string) {
   return MSR.get<PlanExecuteResult>({ url: `${TaskResultUrl}/${id}` });
+}
+
+// 获取测试计划邮件接收人配置
+export function getTestPlanEmailConfig(testPlanId: string) {
+  return MSR.get<{ testPlanId: string; emailRecipients: string }>({
+    url: `${TestPlanEmailConfigUrl}/${testPlanId}`,
+  });
+}
+
+// 保存测试计划邮件接收人配置
+export function saveTestPlanEmailConfig(data: { testPlanId: string; emailRecipients: string }) {
+  return MSR.post({ url: TestPlanEmailConfigUrl, data });
 }

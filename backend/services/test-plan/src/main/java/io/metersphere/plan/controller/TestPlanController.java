@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import io.metersphere.plan.constants.TestPlanResourceConfig;
 import io.metersphere.plan.domain.TestPlan;
+import io.metersphere.plan.dto.TestPlanEmailConfigDTO;
 import io.metersphere.plan.dto.TestPlanExecuteHisDTO;
 import io.metersphere.plan.dto.request.*;
 import io.metersphere.plan.dto.response.*;
@@ -51,6 +52,8 @@ public class TestPlanController {
     private TestPlanStatisticsService testPlanStatisticsService;
     @Resource
     private PermissionCheckService permissionCheckService;
+    @Resource
+    private TestPlanEmailConfigService testPlanEmailConfigService;
 
     public static final String TEST_PLAN_MODULE = "testPlan";
 
@@ -286,5 +289,21 @@ public class TestPlanController {
         Page<Object> page = PageHelper.startPage(request.getCurrent(), request.getPageSize(),
                 MapUtils.isEmpty(request.getSort()) ? "et.create_time desc" : request.getSortString());
         return PageUtils.setPageInfo(page, testPlanService.listHis(request));
+    }
+
+    @GetMapping("/email-config/{testPlanId}")
+    @Operation(summary = "测试计划-获取测试计划邮件接收人配置")
+    @RequiresPermissions(PermissionConstants.TEST_PLAN_READ)
+    @CheckOwner(resourceId = "#testPlanId", resourceType = "test_plan")
+    public TestPlanEmailConfigDTO getEmailConfig(@PathVariable String testPlanId) {
+        return testPlanEmailConfigService.getEmailConfig(testPlanId);
+    }
+
+    @PostMapping("/email-config")
+    @Operation(summary = "测试计划-保存测试计划邮件接收人配置")
+    @RequiresPermissions(PermissionConstants.TEST_PLAN_READ_UPDATE)
+    @CheckOwner(resourceId = "#request.getTestPlanId()", resourceType = "test_plan")
+    public void saveEmailConfig(@Validated @RequestBody TestPlanEmailConfigDTO request) {
+        testPlanEmailConfigService.saveEmailConfig(request, SessionUtils.getUserId());
     }
 }

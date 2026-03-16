@@ -147,6 +147,8 @@ public class ApiScenarioService extends MoveNodeService {
     @Resource
     private ApiScenarioCsvStepMapper apiScenarioCsvStepMapper;
     @Resource
+    private ApiScenarioEmailConfigMapper apiScenarioEmailConfigMapper;
+    @Resource
     private ScheduleService scheduleService;
     @Resource
     private ScheduleMapper scheduleMapper;
@@ -1025,6 +1027,9 @@ public class ApiScenarioService extends MoveNodeService {
         //删除定时任务
         scheduleService.deleteByResourceId(scenario.getId(), ApiScenarioScheduleJob.class.getName());
 
+        //删除邮件配置
+        apiScenarioEmailConfigMapper.deleteByPrimaryKey(scenario.getId());
+
         //删除功能用例关联关系
         FunctionalCaseTestExample functionalCaseTestExample = new FunctionalCaseTestExample();
         functionalCaseTestExample.createCriteria().andSourceIdEqualTo(scenario.getId()).andSourceTypeEqualTo(SCENARIO);
@@ -1066,6 +1071,9 @@ public class ApiScenarioService extends MoveNodeService {
         apiFileResourceService.deleteByResourceIds(scenarioDir, scenarioIdList, projectId, operator, OperationLogModule.API_SCENARIO_MANAGEMENT_SCENARIO);
         //删除定时任务
         scheduleService.deleteByResourceIds(scenarioIdList, ApiScenarioScheduleJob.class.getName());
+
+        //删除邮件配置
+        apiScenarioEmailConfigMapper.deleteByScenarioIds(scenarioIdList);
 
         //删除csv
         ApiScenarioCsvExample csvExample = new ApiScenarioCsvExample();

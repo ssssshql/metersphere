@@ -7,11 +7,16 @@ import io.metersphere.api.domain.ApiScenarioEmailConfig;
 import io.metersphere.api.domain.ApiScenarioReport;
 import io.metersphere.api.mapper.ApiScenarioEmailConfigMapper;
 import io.metersphere.api.mapper.ApiScenarioReportMapper;
+import io.metersphere.plan.domain.TestPlanEmailConfig;
+import io.metersphere.plan.domain.TestPlanReport;
 import io.metersphere.plan.domain.TestPlanReportApiScenario;
 import io.metersphere.plan.domain.TestPlanReportExtension;
+import io.metersphere.plan.mapper.TestPlanEmailConfigMapper;
 import io.metersphere.plan.mapper.TestPlanReportApiScenarioMapper;
 import io.metersphere.plan.mapper.TestPlanReportExtensionMapper;
+import io.metersphere.plan.mapper.TestPlanReportMapper;
 import io.metersphere.project.domain.Project;
+import io.metersphere.sdk.domain.BaseEmailConfig;
 import io.metersphere.sdk.domain.Environment;
 import io.metersphere.sdk.domain.EnvironmentBlob;
 import io.metersphere.sdk.mapper.EnvironmentBlobMapper;
@@ -28,6 +33,7 @@ import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -70,6 +76,10 @@ public class NoticeSendService {
     private TestPlanReportExtensionMapper testPlanReportExtensionMapper;
     @Resource
     private TestPlanReportApiScenarioMapper testPlanReportApiScenarioMapper;
+    @Autowired
+    private TestPlanEmailConfigMapper testPlanEmailConfigMapper;
+    @Autowired
+    private TestPlanReportMapper testPlanReportMapper;
 
     private AbstractNoticeSender getNoticeSender(MessageDetail messageDetail) {
         AbstractNoticeSender noticeSender;
@@ -281,7 +291,19 @@ public class NoticeSendService {
                 return;
             }
             String scenarioId = paramMap.get("id").toString();
-            ApiScenarioEmailConfig emailConfig = apiScenarioEmailConfigMapper.selectByPrimaryKey(scenarioId);
+            // 部署版本、部署时间
+            TestPlanReportExtension extension = null;
+            BaseEmailConfig emailConfig;
+            if(paramMap.containsKey("plan_report_api_scenario_id")){
+                // 测试计划
+                TestPlanReportApiScenario planReportApiScenario = testPlanReportApiScenarioMapper.selectByPrimaryKey(getStringValue(paramMap, "plan_report_api_scenario_id"));
+                extension = testPlanReportExtensionMapper.selectByReportId(planReportApiScenario.getTestPlanReportId());
+                TestPlanReport testPlanReport = testPlanReportMapper.selectByPrimaryKey(planReportApiScenario.getTestPlanReportId());
+                emailConfig = testPlanEmailConfigMapper.selectByPrimaryKey(testPlanReport.getTestPlanId());
+            }else{
+                emailConfig = apiScenarioEmailConfigMapper.selectByPrimaryKey(scenarioId);
+            }
+            // 场景
             if (emailConfig == null || StringUtils.isBlank(emailConfig.getEmailRecipients())) {
                 return;
             }
@@ -302,13 +324,6 @@ public class NoticeSendService {
             // 构建邮件标题
             String scenarioName = getStringValue(paramMap, "name");
 //            String executionTime = formatTime(lastReport.getStartTime());
-
-            // 部署版本、部署时间
-            TestPlanReportExtension extension = null;
-            if(paramMap.containsKey("plan_report_api_scenario_id")){
-                TestPlanReportApiScenario planReportApiScenario = testPlanReportApiScenarioMapper.selectByPrimaryKey(getStringValue(paramMap, "plan_report_api_scenario_id"));
-                extension = testPlanReportExtensionMapper.selectByReportId(planReportApiScenario.getTestPlanReportId());
-            }
 
             // 测试结果
             String reportStatus = lastReport.getStatus().equals("SUCCESS") ? "成功" : "失败";

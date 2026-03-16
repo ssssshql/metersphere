@@ -145,4 +145,11 @@ export default {
   'testPlan.planConfigReport': '自定义报告',
   'testPlan.planAutomaticGeneration': '自动生成',
   'testPlan.caseType': '用例类型',
+  'testPlan.testPlanIndex.emailConfig': '邮件配置',
+  'testPlan.testPlanIndex.emailConfig.title': '邮件接收人配置',
+  'testPlan.testPlanIndex.emailConfig.recipients': '邮件接收人',
+  'testPlan.testPlanIndex.emailConfig.recipientsPlaceholder': '请输入邮件接收人邮箱，多个邮箱用英文逗号分隔',
+  'testPlan.testPlanIndex.emailConfig.recipientsTip': '多个邮箱用英文逗号分隔，例如：user1@example.com,user2@example.com',
+  'testPlan.testPlanIndex.emailConfig.recipientsFormatError': '邮箱格式不正确：{emails}',
+  'testPlan.testPlanIndex.emailConfig.saveSuccess': '保存成功',
 };
