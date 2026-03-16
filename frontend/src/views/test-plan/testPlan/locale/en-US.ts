@@ -39,12 +39,10 @@ export default {
   'testPlan.testPlanIndex.serial': 'Serial',
   'testPlan.testPlanIndex.parallel': 'Parallel',
   'testPlan.testPlanIndex.confirmBatchDeletePlan': 'Are you sure to delete {count} test plans?',
-  'testPlan.testPlanIndex.confirmBatchDeletePlanContentTip':
-    'Only sub-plans within the test plan and plan group are deleted',
+  'testPlan.testPlanIndex.confirmBatchDeletePlanContentTip':'Only sub-plans within the test plan and plan group are deleted',
   'testPlan.testPlanIndex.confirmBatchDeletePlanContent': 'After delete, data unrecoverable, please careful operation.',
   'testPlan.testPlanIndex.confirmBatchArchivePlan': 'Are you sure to archive {count} test plans?',
-  'testPlan.testPlanIndex.confirmBatchArchivePlanContent':
-    'Only completed test plans can be archived! \n after filing, implement information no longer update and editing, data unrecoverable, please careful operation.',
+  'testPlan.testPlanIndex.confirmBatchArchivePlanContent':'Only completed test plans can be archived! \n after filing, implement information no longer update and editing, data unrecoverable, please careful operation.',
   'testPlan.testPlanIndex.createScheduledTask': 'Create Scheduled Task',
   'testPlan.testPlanIndex.updateScheduledTask': 'Update Scheduled Task',
   'testPlan.testPlanIndex.batchUpdateScheduledTask': 'Batch Edit Scheduled Task',
@@ -71,12 +69,9 @@ export default {
   'testPlan.testPlanIndex.operateWithCaution': 'please operate with caution!',
   'testPlan.testPlanIndex.deleteArchivedPlan': 'Archived. Data cannot be recovered after deletion.',
   'testPlan.testPlanIndex.deletePendingPlan': 'Not executed. Data cannot be recovered after deletion.',
-  'testPlan.testPlanIndex.deleteRunningPlan':
-    'In progress. After deletion, execution terminates and cannot be recovered.',
-  'testPlan.testPlanIndex.deleteCompletedPlan':
-    'Suggest that completed plans, choose archiving, and retain use case information and execution results; If the deletion continues, the data will not be restored,',
-  'testPlan.testPlanIndex.confirmArchivePlan':
-    'After filing, implement information no longer update and editing, data unrecoverable, please careful operation！',
+  'testPlan.testPlanIndex.deleteRunningPlan':'In progress. After deletion, execution terminates and cannot be recovered.',
+  'testPlan.testPlanIndex.deleteCompletedPlan':'Suggest that completed plans, choose archiving, and retain use case information and execution results; If the deletion continues, the data will not be restored,',
+  'testPlan.testPlanIndex.confirmArchivePlan':'After filing, implement information no longer update and editing, data unrecoverable, please careful operation！',
   'testPlan.testPlanIndex.passRateTitleTip': 'Passed use cases/all use cases *100%',
   'testPlan.planForm.namePlaceholder': 'Please enter the name of the test plan',
   'testPlan.planForm.nameGroupPlaceholder': 'Please enter a plan group name',
@@ -91,10 +86,8 @@ export default {
   'testPlan.planForm.selectPlanGroup': 'Select plan group',
   'testPlan.planForm.repeatCaseTip1': 'Enable: Repeatedly associate the same case',
   'testPlan.planForm.repeatCaseTip2': 'Close: Cannot be associated with the same case repeatedly',
-  'testPlan.planForm.enableAutomaticStatusTip':
-    'Enable: Function cases the interface associated use case/scenario use case implementation success, function of the use case status automatically updated to success',
-  'testPlan.planForm.closeAutomaticStatusTip':
-    'Close: Function of use case execution result is not affected by the interface use case/scenario use case',
+  'testPlan.planForm.enableAutomaticStatusTip':'Enable: Function cases the interface associated use case/scenario use case implementation success, function of the use case status automatically updated to success',
+  'testPlan.planForm.closeAutomaticStatusTip':'Close: Function of use case execution result is not affected by the interface use case/scenario use case',
   'testPlan.planForm.passThresholdTip': 'If the pass rate reaches the specified pass threshold, the result is passed',
   'testPlan.planForm.pickCases': 'Select cases',
   'testPlan.testPlanDetail.executed': 'Executed',
@@ -114,10 +107,8 @@ export default {
   'testPlan.featureCase.noBugDataTooltip': 'No related defects, please',
   'testPlan.featureCase.noBugDataNewBug': 'New defect',
   'testPlan.featureCase.disassociateTip': 'Are you sure to cancel the association {name}? ',
-  'testPlan.featureCase.disassociateTipContent':
-    'After cancellation, it will affect the statistics related to the test plan',
-  'testPlan.featureCase.batchDisassociateTipContent':
-    ' After cancellation, associate again, and the execution result is unexecuted',
+  'testPlan.featureCase.disassociateTipContent':'After cancellation, it will affect the statistics related to the test plan',
+  'testPlan.featureCase.batchDisassociateTipContent': 'After cancellation, associate again, and the execution result is unexecuted',
   'testPlan.featureCase.startExecution': 'start Execution',
   'testPlan.featureCase.richTextDblclickPlaceholder': 'Double click for full screen input',
   'testPlan.featureCase.autoNextTip1': 'Enable: After submitting the results, jump to the next case',
@@ -134,15 +125,11 @@ export default {
   'testPlan.testPlanGroup.newPlanPlaceHolder': 'Please enter name',
   'testPlan.testPlanGroup.noPlanOnGroupArchiveTitle': '{name} No archived test plan',
   'testPlan.testPlanGroup.noPlanOnGroupArchiveContent': 'The test plan can be archived if the status is completed',
-  'testPlan.testPlanGroup.allPlanIsCompletedAndArchivedContent':
-    'Test plans in the Completed state can be archived. Archived plans are not affected',
-  'testPlan.testPlanGroup.unCompletedAndArchivedContent':
-    'Status as completed test plans can be archived, unfinished and archived plans are not affected',
+  'testPlan.testPlanGroup.allPlanIsCompletedAndArchivedContent':'Test plans in the Completed state can be archived. Archived plans are not affected',
+  'testPlan.testPlanGroup.unCompletedAndArchivedContent': 'Status as completed test plans can be archived, unfinished and archived plans are not affected',
   'testPlan.testPlanGroup.planGroupArchiveTitle': 'Confirm archive {name} plan group and plan?',
-  'testPlan.testPlanGroup.planGroupArchiveContent':
-    'After archived, plan and carry out information no longer update and edit data unrecoverable, please careful operation.',
-  'testPlan.testPlanGroup.planGroupDeleteContent':
-    'It is recommended to select the archive, and the use case information and execution results will be retained;The data will not be restored if continue to delete,',
+  'testPlan.testPlanGroup.planGroupArchiveContent': 'After archived, plan and carry out information no longer update and edit data unrecoverable, please careful operation.',
+  'testPlan.testPlanGroup.planGroupDeleteContent': 'It is recommended to select the archive, and the use case information and execution results will be retained;The data will not be restored if continue to delete,',
   'testPlan.testPlanGroup.selectTestPlanGroupPlaceHolder': 'Please select the Plan group',
   'testPlan.testPlanGroup.batchArchivedGroup': 'Confirm archive: {count} test plan groups?',
   'testPlan.testPlanGroup.confirmBatchDeletePlanGroup': 'Are you sure to delete {count} test plan groups?',
