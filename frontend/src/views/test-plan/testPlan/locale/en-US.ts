@@ -159,7 +159,7 @@ export default {
   'testPlan.testPlanIndex.emailConfig.title': 'Email Recipient Configuration',
   'testPlan.testPlanIndex.emailConfig.recipients': 'Email Recipients',
   'testPlan.testPlanIndex.emailConfig.recipientsPlaceholder': 'Please enter email addresses, separated by commas',
-  'testPlan.testPlanIndex.emailConfig.recipientsTip': 'Separate multiple emails with commas, e.g., user1@example.com,user2@example.com',
+  'testPlan.testPlanIndex.emailConfig.recipientsTip': 'Separate multiple emails with commas',
   'testPlan.testPlanIndex.emailConfig.recipientsFormatError': 'Invalid email format: {emails}',
   'testPlan.testPlanIndex.emailConfig.saveSuccess': 'Saved successfully',
 };
