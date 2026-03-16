@@ -384,7 +384,7 @@ public class NoticeSendService {
         html.append("<tr><td style='color:#666;padding-right:16px;'>测试结果</td><td style='font-weight:bold;color:").append(statusColor).append(";'>").append(reportStatus).append("</td></tr>");
         appendInfoRow(html, "测试开始时间", formatTime(lastReport.getStartTime()));
         appendInfoRow(html, "测试结束时间", formatTime(lastReport.getEndTime()));
-        appendInfoRow(html, "接口总数", getStringValue(paramMap, "stepTotal"));
+        appendInfoRow(html, "接口总数", String.valueOf(lastReport.getSuccessCount() + lastReport.getErrorCount()));
         appendInfoRow(html, "成功接口数", String.valueOf(lastReport.getSuccessCount()));
         appendInfoRow(html, "失败接口数", String.valueOf(lastReport.getErrorCount()));
         appendInfoRow(html, "成功率", lastReport.getRequestPassRate() + "%");
