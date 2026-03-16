@@ -40,7 +40,8 @@ export default {
   'testPlan.testPlanIndex.confirmBatchDeletePlanContentTip': '仅删除测试计划和计划组内的子计划',
   'testPlan.testPlanIndex.confirmBatchDeletePlanContent': '删除后，数据不可恢复，请谨慎操作！',
   'testPlan.testPlanIndex.confirmBatchArchivePlan': '确认归档 {count} 个测试计划吗？',
-  'testPlan.testPlanIndex.confirmBatchArchivePlanContent': '仅 已完成 测试计划可归档！\r\n 归档后，执行信息不再更新且不可编辑，数据不可恢复，请谨慎操作!',
+  'testPlan.testPlanIndex.confirmBatchArchivePlanContent':
+    '仅 已完成 测试计划可归档！\r\n 归档后，执行信息不再更新且不可编辑，数据不可恢复，请谨慎操作!',
   'testPlan.testPlanIndex.createScheduledTask': '创建定时任务',
   'testPlan.testPlanIndex.updateScheduledTask': '更新定时任务',
   'testPlan.testPlanIndex.batchUpdateScheduledTask': '批量编辑定时任务',
@@ -68,7 +69,8 @@ export default {
   'testPlan.testPlanIndex.deleteArchivedPlan': ' 已归档，删除后数据不可恢复，',
   'testPlan.testPlanIndex.deletePendingPlan': ' 未执行，删除后数据不可恢复，',
   'testPlan.testPlanIndex.deleteRunningPlan': ' 进行中，删除后，终止执行且不可恢复，',
-  'testPlan.testPlanIndex.deleteCompletedPlan': '建议计划 已完成 ，选择归档，用例信息及执行结果都将被保留；若继续删除，数据将不会恢复，',
+  'testPlan.testPlanIndex.deleteCompletedPlan':
+    '建议计划 已完成 ，选择归档，用例信息及执行结果都将被保留；若继续删除，数据将不会恢复，',
   'testPlan.testPlanIndex.confirmArchivePlan': '归档后，执行信息不再更新且不可编辑，数据不可恢复，请谨慎操作！',
   'testPlan.testPlanIndex.passRateTitleTip': '已通过用例/全部用例*100%',
   'testPlan.testPlanIndex.batchEdit': '批量编辑 (已选 { number } 项数据)',
@@ -85,7 +87,8 @@ export default {
   'testPlan.planForm.selectPlanGroup': '选择计划组',
   'testPlan.planForm.repeatCaseTip1': '开启：可重复关联同一个用例',
   'testPlan.planForm.repeatCaseTip2': '关闭：不可重复关联同一用例',
-  'testPlan.planForm.enableAutomaticStatusTip': '开启：功能用例关联的接口用例/场景用例执行成功，功能用例的状态自动更新为成功',
+  'testPlan.planForm.enableAutomaticStatusTip':
+    '开启：功能用例关联的接口用例/场景用例执行成功，功能用例的状态自动更新为成功',
   'testPlan.planForm.closeAutomaticStatusTip': '关闭：功能用例的执行结果不受接口用例/场景用例的影响',
   'testPlan.planForm.passThresholdTip': '通过率达到设置的通过阈值时，报告结果为通过',
   'testPlan.planForm.pickCases': '选择用例',
@@ -125,8 +128,10 @@ export default {
   'testPlan.testPlanGroup.copyPlanGroupTitle': '复制计划组',
   'testPlan.testPlanGroup.newPlanPlaceHolder': '请输入名称',
   'testPlan.testPlanGroup.planGroupArchiveTitle': '确认归档 {name} 计划组以及计划吗？',
-  'testPlan.testPlanGroup.planGroupArchiveContent': '归档后，计划执行信息不再更新且不可编辑，数据不可恢复，请谨慎操作！',
-  'testPlan.testPlanGroup.planGroupDeleteContent': '已完成 建议选择归档，用例信息及执行结果都将被保留；若继续删除，数据将不会恢复，',
+  'testPlan.testPlanGroup.planGroupArchiveContent':
+    '归档后，计划执行信息不再更新且不可编辑，数据不可恢复，请谨慎操作！',
+  'testPlan.testPlanGroup.planGroupDeleteContent':
+    ' 已完成 建议选择归档，用例信息及执行结果都将被保留；若继续删除，数据将不会恢复，',
   'testPlan.testPlanGroup.module': '模块',
   'testPlan.testPlanGroup.selectTestPlanGroupPlaceHolder': '请选择计划组',
   'testPlan.testPlanGroup.batchArchivedGroup': '确认归档：{count} 个测试计划组吗？',
@@ -141,7 +146,7 @@ export default {
   'testPlan.planAutomaticGeneration': '自动生成',
   'testPlan.caseType': '用例类型',
   'testPlan.testPlanIndex.emailConfig': '邮件配置',
-  'testPlan.testPlanIndex.emailConfig.title': '邮件配置',
+  'testPlan.testPlanIndex.emailConfig.title': '邮件接收人配置',
   'testPlan.testPlanIndex.emailConfig.recipients': '邮件接收人',
   'testPlan.testPlanIndex.emailConfig.recipientsPlaceholder': '请输入邮件接收人邮箱，多个邮箱用英文逗号分隔',
   'testPlan.testPlanIndex.emailConfig.recipientsTip': '多个邮箱用英文逗号分隔，例如：user1@example.com,user2@example.com',

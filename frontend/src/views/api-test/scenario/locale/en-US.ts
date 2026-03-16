@@ -4,7 +4,8 @@ export default {
   'apiScenario.createScenario': 'Create Scenario',
   'apiScenario.importScenario': 'Import Scenario',
   'apiScenario.importScenarioCoverTip': 'If the same scene already exists in the system, it will be overwritten.',
-  'apiScenario.importScenarioUncoverTip1':'1. If the same scene already exists in the system (with a unique name under the module), no changes will be made',
+  'apiScenario.importScenarioUncoverTip1':
+    '1. If the same scene already exists in the system (with a unique name under the module), no changes will be made',
   'apiScenario.importScenarioUncoverTip2': '2. If the scenario does not exist in the system, add',
   'apiScenario.importScenarioUploadTip': '仅支持 json格式文件，单个大小不超过 {size} MB',
   'apiScenario.tree.selectorPlaceholder': 'Please enter module name',
@@ -12,7 +13,8 @@ export default {
   'apiScenario.tree.noMatchModule': 'No matching module found',
   'apiScenario.createSubModule': 'Create Submodule',
   'apiScenario.module.deleteTipTitle': 'Delete Module {name}?',
-  'apiScenario.module.deleteTipContent':'Deleting will also delete all scenarios under the module. Proceed with caution.',
+  'apiScenario.module.deleteTipContent':
+    'Deleting will also delete all scenarios under the module. Proceed with caution.',
   'apiScenario.deleteConfirm': 'Confirm Delete',
   'apiScenario.deleteSuccess': 'Delete Successful',
   'apiScenario.moveSuccess': 'Move Successful',
@@ -31,10 +33,13 @@ export default {
   'apiScenario.params.csvName': 'CSV name',
   'apiScenario.params.csvScoped': 'Scope',
   'apiScenario.params.file': 'File',
-  'apiScenario.params.csvScopedTip1':'Scenario level: Load CSV before executing the scenario. Data can be read from CSV in any step of the current scenario.',
-  'apiScenario.params.csvScopedTip2':'Step level: The CSV needs to be added to the scenario step. The CSV is loaded when executing this loop step, and the scope is the request within the loop step.',
+  'apiScenario.params.csvScopedTip1':
+    'Scenario level: Load CSV before executing the scenario. Data can be read from CSV in any step of the current scenario.',
+  'apiScenario.params.csvScopedTip2':
+    'Step level: The CSV needs to be added to the scenario step. The CSV is loaded when executing this loop step, and the scope is the request within the loop step.',
   'apiScenario.params.searchPlaceholder': 'Search by name/tag',
-  'apiScenario.params.priority':'Variable Priority: Temporary Parameters > Scenario Parameters > Environment Parameters; Note: Avoid using variables with the same name. In case of same name variables, scenario-level CSV has the highest priority.',
+  'apiScenario.params.priority':
+    'Variable Priority: Temporary Parameters > Scenario Parameters > Environment Parameters; Note: Avoid using variables with the same name. In case of same name variables, scenario-level CSV has the highest priority.',
   'apiScenario.params.name': 'Variable Name',
   'apiScenario.params.type': 'Type',
   'apiScenario.params.paramValue': 'Parameter Value',
@@ -176,23 +181,33 @@ export default {
   'apiScenario.sourceScenarioEnv': 'Use source Scenario Environment',
   'apiScenario.valuePriority': 'Value Priority:',
   'apiScenario.notSource': 'Current Step Parameters > Current Scenario Parameters > Current Environment Parameters',
-  'apiScenario.notSourceParamAndSourceEnv':'Current Step Parameters > Current Scenario Parameters > Original Environment Parameters',
-  'apiScenario.currentParamAndSource':'Current Step Parameters > Current Scenario Parameters > Current Environment Parameters > Original Scenario Parameters',
-  'apiScenario.currentParamAndSourceEnv':'Current Step Parameters > Current Scenario Parameters > Original Scenario Parameters > Original Environment Parameters',
-  'apiScenario.sourceParamAndSource':'Original Scenario Parameters > Current Step Parameters > Current Scenario Parameters > Current Environment Parameters',
-  'apiScenario.sourceParamAndSourceEnv':'Original Scenario Parameters > Original Environment Parameters > Current Step Parameters > Current Scenario Parameters',
-  'apiScenario.fullQuoteTip':'Full Quote: Follows the original step content and step status changes. Step status cannot be adjusted.',
-  'apiScenario.stepQuoteTip':'Step Quote: Only follows the original step content changes. Step status can be adjusted.',
+  'apiScenario.notSourceParamAndSourceEnv':
+    'Current Step Parameters > Current Scenario Parameters > Original Environment Parameters',
+  'apiScenario.currentParamAndSource':
+    'Current Step Parameters > Current Scenario Parameters > Current Environment Parameters > Original Scenario Parameters',
+  'apiScenario.currentParamAndSourceEnv':
+    'Current Step Parameters > Current Scenario Parameters > Original Scenario Parameters > Original Environment Parameters',
+  'apiScenario.sourceParamAndSource':
+    'Original Scenario Parameters > Current Step Parameters > Current Scenario Parameters > Current Environment Parameters',
+  'apiScenario.sourceParamAndSourceEnv':
+    'Original Scenario Parameters > Original Environment Parameters > Current Step Parameters > Current Scenario Parameters',
+  'apiScenario.fullQuoteTip':
+    'Full Quote: Follows the original step content and step status changes. Step status cannot be adjusted.',
+  'apiScenario.stepQuoteTip':
+    'Step Quote: Only follows the original step content changes. Step status can be adjusted.',
   'apiScenario.sourceScenarioEnvTip': 'Runtime environment, including environment parameters',
   'apiScenario.setSuccess': 'Set Successful',
   'apiScenario.pleaseInputUrl': 'Please enter URL',
   'apiScenario.syncSaveAsCase': 'Synchronize adding interface test cases',
   'apiScenario.changeStepTo': 'Change the current step to',
   'apiScenario.deleteStepConfirm': 'Are you sure you want to delete {name}?',
-  'apiScenario.deleteStepConfirmWithChildren':'Are you sure you want to delete the selected step and all substeps within the step?',
+  'apiScenario.deleteStepConfirmWithChildren':
+    'Are you sure you want to delete the selected step and all substeps within the step?',
   'apiScenario.quoteScenarioStepNotAllowDelete': 'Substeps that reference a scenario cannot be deleted',
-  'apiScenario.openGlobalPostConditionTip':'It is closed by default. If it is closed, the global post-processing will not be executed when running this interface.',
-  'apiScenario.openGlobalPreConditionTip':'It is closed by default. If it is closed, the global prefix will not be executed when running this interface.',
+  'apiScenario.openGlobalPostConditionTip':
+    'It is closed by default. If it is closed, the global post-processing will not be executed when running this interface.',
+  'apiScenario.openGlobalPreConditionTip':
+    'It is closed by default. If it is closed, the global prefix will not be executed when running this interface.',
   // Execution History
   'apiScenario.executeHistory.searchPlaceholder': 'Search by ID or name',
   'apiScenario.executeHistory.num': 'No.',
@@ -203,7 +218,8 @@ export default {
   'apiScenario.executeHistory.execution.operation': 'Execution Result',
   'apiScenario.executeHistory.status.rerunning': 'Rerunning',
   // Operation History
-  'apiScenario.historyListTip':'View and compare historical modifications. According to administrator settings, change history data will be automatically deleted.',
+  'apiScenario.historyListTip':
+    'View and compare historical modifications. According to administrator settings, change history data will be automatically deleted.',
   'apiScenario.changeOrder': 'Change Order',
   'apiScenario.type': 'Type',
   'apiScenario.operationUser': 'Operator',
@@ -215,7 +231,8 @@ export default {
   'api_scenario.recycle.list': 'Recycle Bin List',
   'api_scenario.recycle.batchCleanOut': 'Delete Permanently',
   'api_scenario.recycle.completedDeleteCaseTitle': 'Confirm Delete Permanently {name}?',
-  'api_scenario.recycle.cleanOutDeleteOnRecycleTip':'Deleting will permanently remove the scenario. Proceed with caution!',
+  'api_scenario.recycle.cleanOutDeleteOnRecycleTip':
+    'Deleting will permanently remove the scenario. Proceed with caution!',
   'apiScenario.quoteTreeNoData': 'No quotable data available, switch projects to retrieve data',
   'apiScenario.quoteTreeSearchTip': 'Enter module name to search',
   'apiScenario.quoteTableSearchTip': 'Search by path or name',
@@ -232,9 +249,12 @@ export default {
   'apiScenario.setting.step.rule': 'Step Execution Failure Rule',
   'apiScenario.setting.step.rule.ignore': 'Ignore Error and Continue Execution',
   'apiScenario.setting.step.rule.stop': 'Stop/End Execution',
-  'apiScenario.setting.cookie.config.tip':'When both global variable Cookie and scenario variable cookie exist, shared Cookie will override global Cookie and scenario variable Cookie',
-  'apiScenario.setting.share.cookie.tip':'If the system extracts Cookie information from the result of a certain step, subsequent steps will use this Cookie. If the request adds a Cookie variable, it will be overridden',
-  'apiScenario.setting.waitTime.tip':'When running a scenario, each step of the scenario will wait for the specified time before triggering the next step',
+  'apiScenario.setting.cookie.config.tip':
+    'When both global variable Cookie and scenario variable cookie exist, shared Cookie will override global Cookie and scenario variable Cookie',
+  'apiScenario.setting.share.cookie.tip':
+    'If the system extracts Cookie information from the result of a certain step, subsequent steps will use this Cookie. If the request adds a Cookie variable, it will be overridden',
+  'apiScenario.setting.waitTime.tip':
+    'When running a scenario, each step of the scenario will wait for the specified time before triggering the next step',
   // Scheduled Task
   'apiScenario.schedule.create': 'Create cron job',
   'apiScenario.schedule.update': 'Edit cron job',
@@ -253,17 +273,21 @@ export default {
   'apiScenario.preConditionTip': 'Execute once before the scene step',
   'apiScenario.postConditionTip': 'Execute once after the scene step',
   'apiScenario.deleteCsvConfirm': 'Are you sure you want to delete {name}?',
-  'apiScenario.deleteCsvConfirmContent':'After deletion, all scenes using the CSV file will be updated, please operate with caution!',
+  'apiScenario.deleteCsvConfirmContent':
+    'After deletion, all scenes using the CSV file will be updated, please operate with caution!',
   'apiScenario.deleteCsvSuccess': 'Deleted',
   'apiScenario.changeScopeConfirm': 'Are you sure you want to change the scope to {type}?',
-  'apiScenario.changeScopeToScenarioConfirmContent':'After being changed, the parameters in the CSV file will take effect for the entire scene, so please operate with caution!',
-  'apiScenario.changeScopeToStepConfirmContent':'After modification, the parameters in the CSV file will only take effect for the steps, please operate with caution!',
+  'apiScenario.changeScopeToScenarioConfirmContent':
+    'After being changed, the parameters in the CSV file will take effect for the entire scene, so please operate with caution!',
+  'apiScenario.changeScopeToStepConfirmContent':
+    'After modification, the parameters in the CSV file will only take effect for the steps, please operate with caution!',
   'apiScenario.confirmChange': 'Confirm changes',
   'apiScenario.changeScopeSuccess': 'Change successful',
   'apiScenario.quoteCsv': 'Quote CSV',
   'apiScenario.replaceCsv': 'Replace CSV',
   'apiScenario.csvQuote': 'CSV quote',
-  'apiScenario.defaultEnvTip':'The current environment is the default environment, and the parameters in the CSV file will not take effect',
+  'apiScenario.defaultEnvTip':
+    'The current environment is the default environment, and the parameters in the CSV file will not take effect',
   'apiScenario.csvNameNotNull': 'CSV name cannot be empty',
   'apiScenario.csvFileNotNull': 'CSV file cannot be empty',
   'apiScenario.export.type.simple': 'Simple',
